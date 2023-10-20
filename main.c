@@ -146,6 +146,10 @@ void main(void){
           uartTransmit(uartBuffer, strlen(uartBuffer));
           sprintf(uartBuffer, "1: PACKET_TYPE_LORA\n");
           uartTransmit(uartBuffer, strlen(uartBuffer));
+          sprintf(uartBuffer, "2: LoRA Sync Word = 0x3444\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          sprintf(uartBuffer, "3: LoRA Sync Word = 0x1424\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
           helpFlag = 1;
         }
         sprintf(uartBuffer, "\n>> ");
@@ -163,6 +167,14 @@ void main(void){
                   sprintf(uartBuffer, "Setting packet type to LoRA...\n");
                   uartTransmit(uartBuffer, strlen(uartBuffer));
                   break;
+            case '2': // set sync word to 0x3444 for Public Network
+                  setLoraSyncWord(0x3444);
+                  sprintf(uartBuffer, "Setting LoRA Sync Word to 0x3444...\n");
+                  uartTransmit(uartBuffer, strlen(uartBuffer));
+            case '3': // Set to 0x1424 for Private Network
+                  setLoraSyncWord(0x1424);
+                  sprintf(uartBuffer, "Setting LoRA Sync Word to 0x1424...\n");
+                  uartTransmit(uartBuffer, strlen(uartBuffer));
             default:
                 break;
         }
@@ -170,6 +182,9 @@ void main(void){
         uartTransmit(uartBuffer, strlen(uartBuffer));
         packetType = getPacketType();
         sprintf(uartBuffer, "Packet Type: %x\n", packetType);
+        uartTransmit(uartBuffer, strlen(uartBuffer));
+      
+        sprintf(uartBuffer, "LoRA Sync World: %x\n", getLoraSyncWord());
         uartTransmit(uartBuffer, strlen(uartBuffer));
 
         sprintf(uartBuffer, "Setting frequency to 915 MHz...\n");

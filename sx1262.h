@@ -143,4 +143,85 @@ void setModulationParams(void){
     len = spiReceive(buff);
 }
 
+writeRegister(int address, char *buffer, int length) {
+    char buff[256];
+    int i, len;
+    buff[0] = 0x0D; // Write register command
+    buff[1] = (address >> 8) & 0xff;// address[15:8]
+    buff[2] = (address >> 0) & 0xff;// address[7:0]
+    for (i=0;i<length;i++) {
+        buff[3+i] = buffer[i]; // data to be written to register(s)
+    }
+    spiTransmit(buff, length+3);
+    len = spiReceive(buff);
+}
+
+
+readRegister(int address, char *buffer, int length) {
+    char buff[256];
+    int i, len;
+    buff[0] = 0x1D; // Read register command
+    buff[1] = (address >> 8) & 0xff;// address[15:8]
+    buff[2] = (address >> 0) & 0xff;// address[7:0]
+    buff[3] = 0x00; // NOP
+    for (i=0;i<length;i++) {
+        buff[i+4] = 0x00; // NOP
+    }
+    spiTransmit(buff, length+4);
+    len = spiReceive(buff);
+    for (i=0;i<len;i++) {
+        buffer[i] = buff[i+4]; // Data contents of the register(s)
+    }
+}
+
+writeBuffer(int offset, char *data, int length) {
+    char buff[256];
+    int i, len;
+    buff[0] = 0x0E; // Write register command
+    buff[1] = offset & 0xff; // offset within the data buffer
+    for (i=0;i<length;i++) { // copy the data into a contiguous buffer, to be sent over spi
+        buff[i+2] = data[i]; // data to be written to register(s)
+    }
+    spiTransmit(buff, length+2);
+    len = spiReceive(buff);
+}
+
+
+readBuffer(int offset, char *data, int length) {
+    char buff[256];
+    int i, len;
+    buff[0] = 0x1D; // Read register command
+    buff[1] = offset & 0xff;// address[15:8]
+    buff[2] = 0x00; // NOP
+    for (i=0;i<length;i++) {
+        buff[i+3] = 0x00; // NOP
+    }
+    spiTransmit(buff, length+3);
+    len = spiReceive(buff);
+    for (i=0;i<len;i++) {
+        data[i] = buff[i+3]; // Data contents of the register(s)
+    }
+}
+
+// Differentiate the LoRa® signal for Public or Private Network
+// Set to 0x3444 for Public Network
+// Set to 0x1424 for Private Network
+void setLoraSyncWord(int syncword) {
+    int len;
+    char buff[2];
+    buff[0] = (syncword >> 8) & 0xff; //MSB of sync word
+    buff[1] = (syncword >> 0) & 0xff; //LSB of sync word
+    writeRegister(0x0740, buff, 2);
+}
+
+int getLoraSyncWord(void) {
+    int len;
+    unsigned int syncword = 0;
+    char buff[2];
+    readRegister(0x0740, buff, 2);
+    syncword += (buff[0] << 0);
+    syncword += (buff[1] << 8);
+    return syncword;
+}
+
 #endif
