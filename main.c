@@ -15,6 +15,7 @@ void main(void){
   struct Status status;
   char standbyMode = 0;
   char packetType = 0;
+  int syncword = 0;
   
   IncrementVcore();
   IncrementVcore();
@@ -32,7 +33,7 @@ void main(void){
     // UART Loopback test
     if (0) {
       if (helpFlag) {
-          sprintf(uartBuffer, "\n\n\nType whatever you want. The MCU will repeat it back to you.\n");
+          sprintf(uartBuffer, "\n\n\nType whatever you want. The MCU will repeat it back to you 3x.\n");
           helpFlag = 0;
           uartTransmit(uartBuffer, strlen(uartBuffer));
       }
@@ -41,6 +42,8 @@ void main(void){
       uartTransmit(uartBuffer, strlen(uartBuffer));
       len = uartReceive(buffer); // This will block until we receive a newline
       toggleLED();
+      uartTransmit(buffer, len);
+      uartTransmit(buffer, len);
       uartTransmit(buffer, len);
     }
 
@@ -122,6 +125,13 @@ void main(void){
                   uartTransmit(uartBuffer, strlen(uartBuffer));
                   break;
             case '6': // TX
+                    sprintf(uartBuffer, "Setting frequency to 915 MHz...\n");
+                  uartTransmit(uartBuffer, strlen(uartBuffer));
+                  setRfFrequency(915);
+                  sprintf(uartBuffer, "Done setting frequency to 915 MHz (I hope)\n");
+                  uartTransmit(uartBuffer, strlen(uartBuffer));
+                  sleep(10);
+
                   setTx(0);
                   sprintf(uartBuffer, "Setting mode to transmit...\n");
                   uartTransmit(uartBuffer, strlen(uartBuffer));
@@ -138,7 +148,8 @@ void main(void){
 
 
     // sx1262 choose packetType, user-interactive
-    if (1) {
+    if (0) {
+        sleep(10);
         if (helpFlag) {
           sprintf(uartBuffer, "\nSelect a packetType for the device\n");
           uartTransmit(uartBuffer, strlen(uartBuffer));
@@ -171,10 +182,12 @@ void main(void){
                   setLoraSyncWord(0x3444);
                   sprintf(uartBuffer, "Setting LoRA Sync Word to 0x3444...\n");
                   uartTransmit(uartBuffer, strlen(uartBuffer));
+                  break;
             case '3': // Set to 0x1424 for Private Network
                   setLoraSyncWord(0x1424);
                   sprintf(uartBuffer, "Setting LoRA Sync Word to 0x1424...\n");
                   uartTransmit(uartBuffer, strlen(uartBuffer));
+                  break;
             default:
                 break;
         }
@@ -183,17 +196,54 @@ void main(void){
         packetType = getPacketType();
         sprintf(uartBuffer, "Packet Type: %x\n", packetType);
         uartTransmit(uartBuffer, strlen(uartBuffer));
-      
-        sprintf(uartBuffer, "LoRA Sync World: %x\n", getLoraSyncWord());
-        uartTransmit(uartBuffer, strlen(uartBuffer));
-
-        sprintf(uartBuffer, "Setting frequency to 915 MHz...\n");
-        uartTransmit(uartBuffer, strlen(uartBuffer));
-        setRfFrequency(915);
-        sprintf(uartBuffer, "Done setting frequency to 915 MHz (I hope)\n");
+             
+        syncword = getLoraSyncWord();
+        sprintf(uartBuffer, "LoRA Sync World: %x\n", syncword);
         uartTransmit(uartBuffer, strlen(uartBuffer));
 
     }
+
+    // sx1262 Receive Test
+    if (1) {
+      if (helpFlag) {
+          sprintf(uartBuffer, "\n\n\nSetting to standby mode...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          setStandby(1);
+          
+          sprintf(uartBuffer, "Setting to LoRA packet type...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          setPacketType(0);
+
+          sprintf(uartBuffer, "Setting RF frequency to 915 MHz...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          setRfFrequency(915);
+
+
+          sprintf(uartBuffer, "Setting modulation parameters...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          setModulationParams();
+
+
+          sprintf(uartBuffer, "Setting packet parameters...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          //setThePacketParams();
+/*
+
+          sprintf(uartBuffer, "\n\n\nGoing to Rx mode...\n");
+          uartTransmit(uartBuffer, strlen(uartBuffer));
+          setRx(0);
+*/
+         
+          helpFlag = 0;
+      }
+
+      sprintf(uartBuffer, "Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
+      uartTransmit(uartBuffer, strlen(uartBuffer));
+
+      len = uartReceive(buffer); // This will block until we receive a newline
+      status = getStatus();
+      sprintf(uartBuffer, "Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+      uartTransmit(uartBuffer, strlen(uartBuffer));    }
 
 
   }// end while loop

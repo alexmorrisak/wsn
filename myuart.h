@@ -45,17 +45,18 @@ void uartTransmit(char *buffer, int length){
     int startTxFlag = 0;
 
     UCA1IE &= ~UCTXIE; //DISABLE INTERRUPTS IN THE CRITICAL SECTION
-
     if (uartTxTail == uartTxHead) { // no transmission active. need to initiate
         while (UCTXIFG == 0) {}; // check that buffer is empty
         UCA1TXBUF = buffer[0]; // send the first byte
         uartTxTail = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
     }
+
     for (i=0; i<length; i++) {
         uartTxBuffer[uartTxHead] = buffer[i];
-        uartTxHead = (uartTxHead + 1) % UART_TX_BUFFER_SIZE;
+        uartTxHead++;
     }
     UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
+
 }
 
 void uartInterrupt(void) __interrupt [USCI_A1_VECTOR]{

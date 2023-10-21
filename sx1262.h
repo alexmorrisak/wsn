@@ -109,17 +109,29 @@ int getPacketType(void) {
 
 
 // setRfFrequency(int frequency)
-void setRfFrequency(int frequency_mhz) {
-    int len;
+void setRfFrequency(unsigned long frequency_mhz) {
     char buff[5];
-    unsigned long bitval = 2^25*frequency_mhz/32;
+    // frequency = bitvalue * F_XTAL / 2^25;
+    // frequency = bitvalue * 32e6 / 2^25;
+    // bitvalue = frequency_hz * 2^25 / 32e6;
+    // bitvalue = frequency_mhz * 2^25 / 32;
+    // bitvalue = frequency_mhz * 2^20;
+    // E.g.: 915 Mhz yields 0x39300000
+    unsigned long bitval = (frequency_mhz << 20);
     buff[0] = 0x86;
-    buff[1] = (bitval >> 24) & 0xff;
-    buff[2] = (bitval >> 16) & 0xff;
-    buff[3] = (bitval >> 8) & 0xff;
-    buff[4] = (bitval >> 0) & 0xff;
-    spiTransmit(buff, 5);
-    len = spiReceive(buff);
+    if (1) {
+        buff[1] = (bitval >> 24) & 0xff;
+        buff[2] = (bitval >> 16) & 0xff;
+        buff[3] = (bitval >> 8) & 0xff;
+        buff[4] = (bitval >> 0) & 0xff;
+        spiTransmit(buff, 5);
+    } else {
+        buff[1] = (bitval >> 16) & 0xff;
+        buff[2] = (bitval >> 8) & 0xff;
+        buff[3] = (bitval >> 0) & 0xff;
+        spiTransmit(buff, 4);
+    }
+    spiReceive(buff);
 }
 
 void setBufferBaseAddress(char txAddr, char rxAddr){
@@ -133,18 +145,49 @@ void setBufferBaseAddress(char txAddr, char rxAddr){
 }
 
 void setModulationParams(void){
-    int len;
     char buff[4];
     buff[0] = 0x8B;
     buff[1] = 0x07; //spreading factor of 7 (dev kit default)
     buff[2] = 0x06;//corresponds to 500 kHz bandwidth (dev kit default)
     buff[3] = 0x01; //coding rate of 4/5 (dev kit default)
     spiTransmit(buff, 4);
-    len = spiReceive(buff);
+    spiReceive(buff);
 }
 
-writeRegister(int address, char *buffer, int length) {
-    char buff[256];
+void setThePacketParams(void) {
+    char buff[4];
+    buff[0] = 0x8B;
+    buff[1] = 0x07; //spreading factor of 7 (dev kit default)
+    buff[2] = 0x06;//corresponds to 500 kHz bandwidth (dev kit default)
+    buff[3] = 0x01; //coding rate of 4/5 (dev kit default)
+     /*
+    spiTransmit(buff, 4);
+    spiReceive(buff);
+
+    //char headerType = 0; 
+    //char payloadLength = 10; // length in bytes. 0x00 to 0xff
+    //char CRCType = 0; // 0=off, 1=On
+    //char InvertIQ = 0; // 0=standard, 1=inverted
+    char buff[10];
+    
+    buff[0] = 0x8C;
+    buff[1] = (1 >> 8) & 0xff;
+    buff[2] = (1 >> 0) & 0xff;
+    buff[3] = 0; // headerType. 0=variable, 1=fixed
+    buff[4] = 10; // payloadLength, in bytes. 0x00 to 0xff
+    buff[5] = 0; // CRC type, 0=off, 1=on
+    buff[6] = 0; // invertIQ. 0=standard, 1=inverted
+    buff[7] = 0x00;
+    buff[8] = 0x00;
+    buff[9] = 0x00;
+    spiTransmit(buff, 10);
+    spiReceive(buff);
+    */
+    
+}
+
+void writeRegister(int address, char *buffer, int length) {
+    char buff[64];
     int i, len;
     buff[0] = 0x0D; // Write register command
     buff[1] = (address >> 8) & 0xff;// address[15:8]
@@ -157,9 +200,9 @@ writeRegister(int address, char *buffer, int length) {
 }
 
 
-readRegister(int address, char *buffer, int length) {
-    char buff[256];
-    int i, len;
+void readRegister(int address, char *data, int length) {
+    char buff[64];
+    int i;
     buff[0] = 0x1D; // Read register command
     buff[1] = (address >> 8) & 0xff;// address[15:8]
     buff[2] = (address >> 0) & 0xff;// address[7:0]
@@ -167,15 +210,17 @@ readRegister(int address, char *buffer, int length) {
     for (i=0;i<length;i++) {
         buff[i+4] = 0x00; // NOP
     }
-    spiTransmit(buff, length+4);
-    len = spiReceive(buff);
-    for (i=0;i<len;i++) {
-        buffer[i] = buff[i+4]; // Data contents of the register(s)
+    //spiTransmit(buff, length+4);
+    spiTransmit(buff,length+4);
+    //spiReceive(buff);
+    spiReceive(buff);
+    for (i=0;i<length;i++) {
+        data[i] = buff[i+4]; // Data contents of the register(s)
     }
 }
 
-writeBuffer(int offset, char *data, int length) {
-    char buff[256];
+void writeBuffer(int offset, char *data, int length) {
+    char buff[64];
     int i, len;
     buff[0] = 0x0E; // Write register command
     buff[1] = offset & 0xff; // offset within the data buffer
@@ -187,11 +232,11 @@ writeBuffer(int offset, char *data, int length) {
 }
 
 
-readBuffer(int offset, char *data, int length) {
-    char buff[256];
+void readBuffer(int offset, char *data, int length) {
+    char buff[64];
     int i, len;
     buff[0] = 0x1D; // Read register command
-    buff[1] = offset & 0xff;// address[15:8]
+    buff[1] = offset & 0xff;// offset address
     buff[2] = 0x00; // NOP
     for (i=0;i<length;i++) {
         buff[i+3] = 0x00; // NOP
@@ -215,13 +260,37 @@ void setLoraSyncWord(int syncword) {
 }
 
 int getLoraSyncWord(void) {
-    int len;
     unsigned int syncword = 0;
     char buff[2];
     readRegister(0x0740, buff, 2);
-    syncword += (buff[0] << 0);
-    syncword += (buff[1] << 8);
+    syncword += (buff[0] << 8);
+    syncword += (buff[1] << 0);
     return syncword;
+}
+
+
+// getStatus()
+struct RxBufferStatus {
+    int PayloadLengthRx;
+    int RxStartBufferPointer;
+};
+
+// This command returns the length of the last received packet (PayloadLengthRx)
+// and the address of the first byte received (RxStartBufferPointer).
+// It is applicable to all modems.
+// The address is an offset relative to the first byte of the data buffer.
+struct RxBufferStatus getRxBufferStatus(void) {
+    struct RxBufferStatus rbstatus;
+    char buff[4];
+    buff[0] = 0x13;
+    buff[1] = 0x00;
+    buff[2] = 0x00;
+    buff[3] = 0x00;
+    spiTransmit(buff, 4);
+    spiReceive(buff);
+    rbstatus.PayloadLengthRx = buff[2];
+    rbstatus.RxStartBufferPointer = buff[3];
+    return rbstatus;
 }
 
 #endif
