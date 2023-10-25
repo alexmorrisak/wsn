@@ -25,6 +25,7 @@ void main(void){
   initSPI();
   initSPI(); // need to init this a 2nd time, otherwise SPI fails to transmit the first char. WHY?
   initUART();
+  sleep(1);
   _EINT();
 
 
@@ -223,16 +224,14 @@ void main(void){
           uartTransmit(uartBuffer, strlen(uartBuffer));
           setModulationParams();
 
-
-          sprintf(uartBuffer, "Setting packet parameters...\n");
+          sprintf(uartBuffer, "Setting the packet params...\n");
           uartTransmit(uartBuffer, strlen(uartBuffer));
-          //setThePacketParams();
-/*
+          setPacketParams();
 
-          sprintf(uartBuffer, "\n\n\nGoing to Rx mode...\n");
+
+          sprintf(uartBuffer, "Going to Rx mode...\n");
           uartTransmit(uartBuffer, strlen(uartBuffer));
           setRx(0);
-*/
          
           helpFlag = 0;
       }

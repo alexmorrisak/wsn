@@ -154,35 +154,27 @@ void setModulationParams(void){
     spiReceive(buff);
 }
 
-void setThePacketParams(void) {
-    char buff[4];
-    buff[0] = 0x8B;
-    buff[1] = 0x07; //spreading factor of 7 (dev kit default)
-    buff[2] = 0x06;//corresponds to 500 kHz bandwidth (dev kit default)
-    buff[3] = 0x01; //coding rate of 4/5 (dev kit default)
-     /*
-    spiTransmit(buff, 4);
-    spiReceive(buff);
+void setPacketParams(void) {
 
-    //char headerType = 0; 
-    //char payloadLength = 10; // length in bytes. 0x00 to 0xff
-    //char CRCType = 0; // 0=off, 1=On
-    //char InvertIQ = 0; // 0=standard, 1=inverted
+    int preambleLength = 1;
+    char headerType = 0;
+    char payloadLength = 10; // length in bytes. 0x00 to 0xff
+    char CRCType = 0; // 0=off, 1=On
+    char InvertIQ = 0; // 0=standard, 1=inverted
     char buff[10];
     
     buff[0] = 0x8C;
-    buff[1] = (1 >> 8) & 0xff;
-    buff[2] = (1 >> 0) & 0xff;
-    buff[3] = 0; // headerType. 0=variable, 1=fixed
-    buff[4] = 10; // payloadLength, in bytes. 0x00 to 0xff
-    buff[5] = 0; // CRC type, 0=off, 1=on
-    buff[6] = 0; // invertIQ. 0=standard, 1=inverted
+    buff[1] = (preambleLength >> 8) & 0xff;
+    buff[2] = (preambleLength >> 0) & 0xff;
+    buff[3] = headerType; // headerType. 0=variable, 1=fixed
+    buff[4] = payloadLength; // payloadLength, in bytes. 0x00 to 0xff
+    buff[5] = CRCType; // CRC type, 0=off, 1=on
+    buff[6] = InvertIQ; // invertIQ. 0=standard, 1=inverted
     buff[7] = 0x00;
     buff[8] = 0x00;
     buff[9] = 0x00;
     spiTransmit(buff, 10);
     spiReceive(buff);
-    */
     
 }
 
