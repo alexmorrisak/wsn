@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <miscellaneous.h>
 
 #define UART_TX_BUFFER_SIZE 256
 #define UART_RX_BUFFER_SIZE 256
@@ -16,6 +17,7 @@ unsigned char uartRxHead = 0;
 unsigned char uartRxTail = 0;
 unsigned int uartRxMsgAvailable = 0;
 char uartPrintfBuffer[256];
+uartTxActive = 0;
 
 void initUART(void) {
   P5SEL |= BIT7 + BIT6;//SETUP PINS
@@ -48,19 +50,29 @@ int uartReceive(char *buffer) {
 void uartTransmit(char *buffer, int length){
     int i = 0;
     int startTxFlag = 0;
+    unsigned char newHead;
 
-    UCA1IE &= ~UCTXIE; //DISABLE INTERRUPTS IN THE CRITICAL SECTION
-    if (uartTxTail == uartTxHead) { // no transmission active. need to initiate
-        while (UCTXIFG == 0) {}; // wait until the buffer is empty
-        UCA1TXBUF = buffer[0]; // send the first byte
-        uartTxTail++;// = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
-    }
-    UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
+    newHead = uartTxHead;
 
     for (i=0; i<length; i++) {
-        uartTxBuffer[uartTxHead] = buffer[i];
-        uartTxHead++;
+        while ((newHead+1) == uartTxTail) {
+        toggleLED();
+        }; // buffer is full. wait
+        uartTxBuffer[newHead] = buffer[i];
+        newHead++;
     }
+
+    //UCA1IE &= ~UCTXIE; //DISABLE INTERRUPTS IN THE CRITICAL SECTION
+
+    if (!uartTxActive) { // no transmission active. need to initiate
+        while (UCTXIFG == 0) {}; // wait until the buffer is empty
+        UCA1TXBUF = uartTxBuffer[uartTxTail]; // send the first byte
+        uartTxTail++;// = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
+        uartTxActive = 1;
+    }
+    uartTxHead = newHead;
+
+    //UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
 
 }
 
@@ -95,7 +107,9 @@ void uartInterrupt(void) __interrupt [USCI_A1_VECTOR]{
         case 0x4: // Tx interrupt
             if (uartTxTail != uartTxHead) { // there are bytes in the buffer that need to be sent
                 UCA1TXBUF = uartTxBuffer[uartTxTail];
-                uartTxTail = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
+                uartTxTail++;
+            } else {
+                uartTxActive = 0;
             }
             
             break;

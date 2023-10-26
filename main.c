@@ -39,11 +39,13 @@ void main(void){
       }
       uartPrintf("\n>> ");
       len = uartReceive(buffer); // This will block until we receive a newline
-      toggleLED();
+      //toggleLED();
       buffer[len] = '\0';
-      uartPrintf("%s", buffer);
-      uartTransmit(buffer, len);
-      uartTransmit(buffer, len);
+      for (i=0;i<50;i++) {
+          uartPrintf("%s", buffer);
+      }
+      //uartTransmit(buffer, len);
+      //uartTransmit(buffer, len);
     }
 
     // SPI Loopback test
@@ -211,7 +213,7 @@ void main(void){
             uartPrintf("Setting RF frequency to 915 MHz...\n");
             setRfFrequency(915);
 
-            sleep(1);
+            //sleep(1);
             uartPrintf("Setting buffer base address...\n");
             setBufferBaseAddress(0,0);
 
@@ -223,19 +225,14 @@ void main(void){
 
             uartPrintf("Setting the packet params...\n");
             setPacketParams();
-
-
-            uartPrintf("Going to Rx mode...\n");
-            setRx(0);
          
             helpFlag = 0;
         }
 
-      uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
-
+      uartPrintf("Press enter to transmit\n>> ");
       len = uartReceive(buffer); // This will block until we receive a newline
-      status = getStatus();
-      uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+      uartPrintf("Going to Tx mode...\n");
+      setTx(0);
 
       }
 
