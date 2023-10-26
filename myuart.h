@@ -1,6 +1,10 @@
 #ifndef MYUART_H
 #define MYUART_H
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
 #define UART_TX_BUFFER_SIZE 256
 #define UART_RX_BUFFER_SIZE 256
 // use uint8 (256 length) get rid of modulo arithmetic
@@ -11,6 +15,7 @@ char uartRxBuffer[UART_RX_BUFFER_SIZE];
 unsigned char uartRxHead = 0;
 unsigned char uartRxTail = 0;
 unsigned int uartRxMsgAvailable = 0;
+char uartPrintfBuffer[256];
 
 void initUART(void) {
   P5SEL |= BIT7 + BIT6;//SETUP PINS
@@ -46,17 +51,30 @@ void uartTransmit(char *buffer, int length){
 
     UCA1IE &= ~UCTXIE; //DISABLE INTERRUPTS IN THE CRITICAL SECTION
     if (uartTxTail == uartTxHead) { // no transmission active. need to initiate
-        while (UCTXIFG == 0) {}; // check that buffer is empty
+        while (UCTXIFG == 0) {}; // wait until the buffer is empty
         UCA1TXBUF = buffer[0]; // send the first byte
-        uartTxTail = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
+        uartTxTail++;// = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
     }
+    UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
 
     for (i=0; i<length; i++) {
         uartTxBuffer[uartTxHead] = buffer[i];
         uartTxHead++;
     }
-    UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
 
+}
+
+int uartPrintf(char *format, ...) {
+   va_list aptr;
+   int ret;
+
+   va_start(aptr, format);
+   ret = vsprintf(uartPrintfBuffer, format, aptr);
+   va_end(aptr);
+
+   uartTransmit(uartPrintfBuffer, strlen(uartPrintfBuffer));
+
+   return(ret);
 }
 
 void uartInterrupt(void) __interrupt [USCI_A1_VECTOR]{

@@ -39,6 +39,8 @@ struct Status getStatus(void) {
 // setStandby(standbyMode)
 // standbyMode 0 = STDBY_RC
 // standbyMode 1 = STDBY_XOSC
+#define STANDBY_RC 0
+#define STANDBY_XOSC 1
 void setStandby(char standbyMode) {
     int len;
     char buff[2];
@@ -84,6 +86,8 @@ void setFs(void) {
 // setPacketType(char packetType)
 // packetType 0 = LoRA
 // packetType 1 = GFSK
+#define PACKET_TYPE_LORA 0
+#define PACKET_TYPE_GFSK 1
 void setPacketType(char packetType) {
     int len;
     char buff[2];
@@ -284,5 +288,25 @@ struct RxBufferStatus getRxBufferStatus(void) {
     rbstatus.RxStartBufferPointer = buff[3];
     return rbstatus;
 }
+
+// This command sets the TX output power by using the parameter power
+// and the TX ramping time by using the parameter
+/*
+The output power is defined as power in dBm in a range of
+• - 17 (0xEF) to +14 (0x0E) dBm by step of 1 dB if low power PA is selected
+• - 9 (0xF7) to +22 (0x16) dBm by step of 1 dB if high power PA is selected
+Selection between high power PA and low power PA is done with the command SetPaConfig and the parameter deviceSel.
+By default low power PA and +14 dBm are set.
+The power ramp time is defined by the parameter RampTime as defined in the following table:
+0x00 thru 0x07
+*/
+void setTxParams(char power, char rampTime) {
+    char buff[3];
+    buff[0] = 0x8E;
+    buff[1] = power;
+    buff[2] = rampTime;
+    spiTransmit(buff, 3);
+    spiReceive(buff);
+} 
 
 #endif
