@@ -158,12 +158,30 @@ void setModulationParams(void){
     spiReceive(buff);
 }
 
+
+void setDioIrqParams(void) {
+    char buff[9];
+    buff[0] = 0x08;
+    buff[1] = 0xff;
+    buff[2] = 0xff;
+    buff[3] = 0x00;
+    buff[4] = 0x00;
+    buff[5] = 0x00;
+    buff[6] = 0x00;
+    buff[7] = 0x00;
+    buff[8] = 0x00;
+    spiTransmit(buff, 4);
+    spiReceive(buff);
+}
+
+// This command is used to set the parameters of the packet handling block.
+
 void setPacketParams(void) {
 
     int preambleLength = 1;
-    char headerType = 0;
-    char payloadLength = 10; // length in bytes. 0x00 to 0xff
-    char CRCType = 0; // 0=off, 1=On
+    char headerType = 0; // 0x00 = variable. 0x01 = fixed
+    char payloadLength = 0x01; // length in bytes. 0x00 to 0xff
+    char CRCType = 1; // 0=off, 1=On
     char InvertIQ = 0; // 0=standard, 1=inverted
     char buff[10];
     
@@ -182,7 +200,7 @@ void setPacketParams(void) {
     
 }
 
-void writeRegister(int address, char *buffer, int length) {
+void writeRegister(char *buffer, int address, int length) {
     char buff[64];
     int i, len;
     buff[0] = 0x0D; // Write register command
@@ -196,7 +214,7 @@ void writeRegister(int address, char *buffer, int length) {
 }
 
 
-void readRegister(int address, char *data, int length) {
+void readRegister(char *data, int address, int length) {
     char buff[64];
     int i;
     buff[0] = 0x1D; // Read register command
@@ -215,7 +233,7 @@ void readRegister(int address, char *data, int length) {
     }
 }
 
-void writeBuffer(int offset, char *data, int length) {
+void writeBuffer(char *data, int offset, int length) {
     char buff[64];
     int i, len;
     buff[0] = 0x0E; // Write register command
@@ -228,10 +246,10 @@ void writeBuffer(int offset, char *data, int length) {
 }
 
 
-void readBuffer(int offset, char *data, int length) {
+void readBuffer(char *data, int offset, int length) {
     char buff[64];
     int i, len;
-    buff[0] = 0x1D; // Read register command
+    buff[0] = 0x1E; // Read register command
     buff[1] = offset & 0xff;// offset address
     buff[2] = 0x00; // NOP
     for (i=0;i<length;i++) {
@@ -252,13 +270,13 @@ void setLoraSyncWord(int syncword) {
     char buff[2];
     buff[0] = (syncword >> 8) & 0xff; //MSB of sync word
     buff[1] = (syncword >> 0) & 0xff; //LSB of sync word
-    writeRegister(0x0740, buff, 2);
+    writeRegister(buff, 0x0740, 2);
 }
 
 int getLoraSyncWord(void) {
     unsigned int syncword = 0;
     char buff[2];
-    readRegister(0x0740, buff, 2);
+    readRegister(buff, 0x0740, 2);
     syncword += (buff[0] << 8);
     syncword += (buff[1] << 0);
     return syncword;
@@ -308,5 +326,20 @@ void setTxParams(char power, char rampTime) {
     spiTransmit(buff, 3);
     spiReceive(buff);
 } 
+
+//This command returns the value of the IRQ register. 
+int getIrqStatus(void){
+    char buff[4];
+    int irqStatus = 0;
+    buff[0] = 0x12;
+    buff[1] = 0x00;
+    buff[2] = 0x00;
+    buff[3] = 0x00;
+    spiTransmit(buff, 4);
+    spiReceive(buff);
+    irqStatus |= (buff[2] << 8);
+    irqStatus |= (buff[3] << 0);
+    return irqStatus;
+}
 
 #endif

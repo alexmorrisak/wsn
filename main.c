@@ -11,11 +11,14 @@ void main(void){
   int i, j, len;
   int helpFlag = 1;
   char buffer[256];
+  char data[256];
   //char uartBuffer[256];
   struct Status status;
+  struct RxBufferStatus rxBufferStatus;
   char standbyMode = 0;
   char packetType = 0;
   int syncword = 0;
+  int irqStatus;
   
   IncrementVcore();
   IncrementVcore();
@@ -28,9 +31,7 @@ void main(void){
   sleep(1);
   _EINT();
 
-
   while (1) {
-
     // UART Loopback test
     if (0) {
       if (helpFlag) {
@@ -170,22 +171,31 @@ void main(void){
     }
 
     // sx1262 Receive Test
-    if (0) {
+    if (1) {
       if (helpFlag) {
           uartPrintf("\n\n\nSetting to standby mode...\n");
           setStandby(STANDBY_RC);
           
           uartPrintf("Setting to LoRA packet type...\n");
-          setPacketType(0);
+          setPacketType(PACKET_TYPE_LORA);
 
           uartPrintf("Setting RF frequency to 915 MHz...\n");
           setRfFrequency(915);
+
+          uartPrintf("Setting buffer base addresses...\n");
+          setBufferBaseAddress(0, 10);
 
           uartPrintf("Setting modulation parameters...\n");
           setModulationParams();
 
           uartPrintf("Setting the packet params...\n");
           setPacketParams();
+
+          uartPrintf("Setting interrupt mask...\n");
+          setDioIrqParams();
+
+          uartPrintf("Setting sync word...\n");
+          setLoraSyncWord(0x3444);
 
           uartPrintf("Going to Rx mode...\n");
           setRx(0);
@@ -198,11 +208,23 @@ void main(void){
       len = uartReceive(buffer); // This will block until we receive a newline
       status = getStatus();
       uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
+      if (status.command_status == 2) {
+          irqStatus = getIrqStatus();
+          uartPrintf("Irq status: 0x%x\n", irqStatus);
+
+          rxBufferStatus = getRxBufferStatus();
+          readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
+          data[rxBufferStatus.PayloadLengthRx] = '\0';
+          uartPrintf("Received this many bytes: %i\n", rxBufferStatus.PayloadLengthRx);
+          uartPrintf("Received packet starts at this address: %i\n", rxBufferStatus.RxStartBufferPointer);
+          uartPrintf("The contents is this: %s\n", data);
+      }
       }
 
 
       // sx1262 Transmit Test
-      if (1) {
+      if (0) {
         if (helpFlag) {
             uartPrintf("\n\n\nSetting to standby mode...\n");
             setStandby(STANDBY_RC);
@@ -215,10 +237,10 @@ void main(void){
 
             //sleep(1);
             uartPrintf("Setting buffer base address...\n");
-            setBufferBaseAddress(0,0);
+            setBufferBaseAddress(0,10);
 
             uartPrintf("Writing to buffer, length %i\n", strlen("Hello world"));
-            writeBuffer(0, "Hello world", strlen("Hello world"));
+            writeBuffer("Hello world", 0, strlen("Hello world"));
 
             uartPrintf("Setting modulation parameters...\n");
             setModulationParams();
@@ -227,7 +249,7 @@ void main(void){
             setPacketParams();
          
             helpFlag = 0;
-        }
+      }
 
       uartPrintf("Press enter to transmit\n>> ");
       len = uartReceive(buffer); // This will block until we receive a newline
