@@ -74,6 +74,14 @@ void setTx(unsigned long timeout) {
     len = spiReceive(buff);
 }
 
+// setTxContinuousWave
+void setTxContinuousWave(void) {
+    char buff[1];
+    buff[0] = 0xd1;
+    spiTransmit(buff, 1);
+    spiReceive(buff);
+}
+
 // setFs(timeout)
 void setFs(void) {
     int len;
@@ -121,9 +129,11 @@ void setRfFrequency(unsigned long frequency_mhz) {
     // bitvalue = frequency_mhz * 2^25 / 32;
     // bitvalue = frequency_mhz * 2^20;
     // E.g.: 915 Mhz yields 0x39300000
-    unsigned long bitval = (frequency_mhz << 20);
+    unsigned long bitval;
+    bitval = (frequency_mhz << 20);
+    //bitval = frequency_mhz;
     buff[0] = 0x86;
-    if (1) {
+    if (0) {
         buff[1] = (bitval >> 24) & 0xff;
         buff[2] = (bitval >> 16) & 0xff;
         buff[3] = (bitval >> 8) & 0xff;
@@ -149,12 +159,17 @@ void setBufferBaseAddress(char txAddr, char rxAddr){
 }
 
 void setModulationParams(void){
-    char buff[4];
+    char buff[9];
     buff[0] = 0x8B;
     buff[1] = 0x07; //spreading factor of 7 (dev kit default)
     buff[2] = 0x06;//corresponds to 500 kHz bandwidth (dev kit default)
     buff[3] = 0x01; //coding rate of 4/5 (dev kit default)
-    spiTransmit(buff, 4);
+    buff[4] = 0x00;
+    buff[5] = 0x00;
+    buff[6] = 0x00;
+    buff[7] = 0x00;
+    buff[8] = 0x00;
+    spiTransmit(buff, 9);
     spiReceive(buff);
 }
 
@@ -177,11 +192,10 @@ void setDioIrqParams(void) {
 // This command is used to set the parameters of the packet handling block.
 
 void setPacketParams(void) {
-
-    int preambleLength = 1;
-    char headerType = 0; // 0x00 = variable. 0x01 = fixed
-    char payloadLength = 0x01; // length in bytes. 0x00 to 0xff
-    char CRCType = 1; // 0=off, 1=On
+    unsigned int preambleLength = 65535;
+    char headerType = 0; // 0x00 = variable (explicit). 0x01 = fixed (implicit)
+    char payloadLength = 0xa; // length in bytes. 0x00 to 0xff
+    char CRCType = 0; // 0=off, 1=On
     char InvertIQ = 0; // 0=standard, 1=inverted
     char buff[10];
     
@@ -326,6 +340,14 @@ void setTxParams(char power, char rampTime) {
     spiTransmit(buff, 3);
     spiReceive(buff);
 } 
+
+void setDIO2AsRfSwitchCtrl(char enable) {
+    char buff[2];
+    buff[0] = 0x9D;
+    buff[1] = enable;
+    spiTransmit(buff, 2);
+    spiReceive(buff);
+}
 
 //This command returns the value of the IRQ register. 
 int getIrqStatus(void){

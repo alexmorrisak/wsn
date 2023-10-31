@@ -5,6 +5,7 @@
 #include "sx1262.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 void main(void){
@@ -19,6 +20,7 @@ void main(void){
   char packetType = 0;
   int syncword = 0;
   int irqStatus;
+  unsigned long freq;
   
   IncrementVcore();
   IncrementVcore();
@@ -133,8 +135,8 @@ void main(void){
         sleep(10);
         if (helpFlag) {
           uartPrintf("\nSelect a packetType for the device\n");
-          uartPrintf("0: PACKET_TYPE_GFSK\n");
-          uartPrintf("1: PACKET_TYPE_LORA\n");
+          uartPrintf("0: PACKET_TYPE_LORA\n");
+          uartPrintf("1: PACKET_TYPE_GFSK\n");
           uartPrintf("2: LoRA Sync Word = 0x3444\n");
           uartPrintf("3: LoRA Sync Word = 0x1424\n");
           helpFlag = 1;
@@ -143,13 +145,15 @@ void main(void){
         len = uartReceive(buffer); // This will block until we receive a newline
 
         switch(buffer[0]) {
-            case '0': // GFSK
+            case '0': // LORA
+                  setPacketType(PACKET_TYPE_LORA);
+                  uartPrintf("Setting packet type to LORA...\n");
+                  //status = getStatus();
+                  uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+                  break;
+            case '1': // GFSK
                   setPacketType(PACKET_TYPE_GFSK);
                   uartPrintf("Setting packet type to GFSK...\n");
-                  break;
-            case '1': // LORA
-                  setPacketType(PACKET_TYPE_GFSK);
-                  uartPrintf("Setting packet type to LoRA...\n");
                   break;
             case '2': // set sync word to 0x3444 for Public Network
                   setLoraSyncWord(0x3444);
@@ -171,7 +175,7 @@ void main(void){
     }
 
     // sx1262 Receive Test
-    if (1) {
+    if (0) {
       if (helpFlag) {
           uartPrintf("\n\n\nSetting to standby mode...\n");
           setStandby(STANDBY_RC);
@@ -190,12 +194,14 @@ void main(void){
 
           uartPrintf("Setting the packet params...\n");
           setPacketParams();
+          status = getStatus();
+          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
           uartPrintf("Setting interrupt mask...\n");
           setDioIrqParams();
 
           uartPrintf("Setting sync word...\n");
-          setLoraSyncWord(0x3444);
+          setLoraSyncWord(0x1424);
 
           uartPrintf("Going to Rx mode...\n");
           setRx(0);
@@ -214,48 +220,66 @@ void main(void){
           uartPrintf("Irq status: 0x%x\n", irqStatus);
 
           rxBufferStatus = getRxBufferStatus();
-          readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
-          data[rxBufferStatus.PayloadLengthRx] = '\0';
+          //readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
+          //data[rxBufferStatus.PayloadLengthRx] = '\0';
           uartPrintf("Received this many bytes: %i\n", rxBufferStatus.PayloadLengthRx);
-          uartPrintf("Received packet starts at this address: %i\n", rxBufferStatus.RxStartBufferPointer);
-          uartPrintf("The contents is this: %s\n", data);
+          //uartPrintf("Received packet starts at this address: %i\n", rxBufferStatus.RxStartBufferPointer);
+          //uartPrintf("The contents is this: %s\n", data);
       }
       }
 
 
       // sx1262 Transmit Test
-      if (0) {
+      if (1) {
         if (helpFlag) {
+
+            status = getStatus();
+            uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
+            uartPrintf("Enter RF frequency setting\n>> ");
+            len = uartReceive(buffer); // This will block until we receive a newline
+            buffer[len] = '\0';
+            freq = atol(buffer);
+            uartPrintf("You entered: %lu\n", freq);
+
+
+
+            setDIO2AsRfSwitchCtrl(1);
+
             uartPrintf("\n\n\nSetting to standby mode...\n");
             setStandby(STANDBY_RC);
           
-            uartPrintf("Setting to LoRA packet type...\n");
-            setPacketType(0);
+            
+            //uartPrintf("Setting to LoRA packet type...\n");
+            //setPacketType(0);
 
-            uartPrintf("Setting RF frequency to 915 MHz...\n");
-            setRfFrequency(915);
+            uartPrintf("Setting RF frequency to %lu MHz...\n", freq);
+            setRfFrequency(freq);
+
+            uartPrintf("Setting Tx params...\n");
+            //setTxParams(0xef, 0x04);
 
             //sleep(1);
-            uartPrintf("Setting buffer base address...\n");
-            setBufferBaseAddress(0,10);
+            //uartPrintf("Setting buffer base address...\n");
+            //setBufferBaseAddress(0,10);
 
-            uartPrintf("Writing to buffer, length %i\n", strlen("Hello world"));
-            writeBuffer("Hello world", 0, strlen("Hello world"));
+            //uartPrintf("Writing to buffer, length %i\n", strlen("Hello world"));
+            //writeBuffer("Hello world", 0, strlen("Hello world"));
 
-            uartPrintf("Setting modulation parameters...\n");
-            setModulationParams();
+            //uartPrintf("Setting modulation parameters...\n");
+            //setModulationParams();
 
-            uartPrintf("Setting the packet params...\n");
-            setPacketParams();
+            //uartPrintf("Setting the packet params...\n");
+            //setPacketParams();
          
-            helpFlag = 0;
+                      
+            uartPrintf("Going to Tx mode...\n");
+            setTxContinuousWave();
+            //helpFlag = 0;
       }
-
-      uartPrintf("Press enter to transmit\n>> ");
-      len = uartReceive(buffer); // This will block until we receive a newline
-      uartPrintf("Going to Tx mode...\n");
-      setTx(0);
-
+      sleep(100);
+      status = getStatus();
+      uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
       }
 
   }// end while loop
