@@ -175,7 +175,7 @@ void main(void){
     }
 
     // sx1262 Receive Test
-    if (0) {
+    if (1) {
       if (helpFlag) {
           uartPrintf("\n\n\nSetting to standby mode...\n");
           setStandby(STANDBY_RC);
@@ -230,34 +230,38 @@ void main(void){
 
 
       // sx1262 Transmit Test
-      if (1) {
+      if (0) {
         if (helpFlag) {
-
-            status = getStatus();
-            uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
-
             uartPrintf("Enter RF frequency setting\n>> ");
             len = uartReceive(buffer); // This will block until we receive a newline
             buffer[len] = '\0';
             freq = atol(buffer);
             uartPrintf("You entered: %lu\n", freq);
 
+            status = getStatus();
+            uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
-
+            sleep(100);
             setDIO2AsRfSwitchCtrl(1);
 
+            sleep(100);
             uartPrintf("\n\n\nSetting to standby mode...\n");
             setStandby(STANDBY_RC);
           
+            sleep(100);
+            uartPrintf("Setting PA Config...\n");
+            setPaConfig(0x04, 0x03, 0x00);
             
             //uartPrintf("Setting to LoRA packet type...\n");
             //setPacketType(0);
 
+            sleep(100);
             uartPrintf("Setting RF frequency to %lu MHz...\n", freq);
             setRfFrequency(freq);
 
+            sleep(100);
             uartPrintf("Setting Tx params...\n");
-            //setTxParams(0xef, 0x04);
+            setTxParams(0x06, 0x07);
 
             //sleep(1);
             //uartPrintf("Setting buffer base address...\n");
@@ -266,15 +270,19 @@ void main(void){
             //uartPrintf("Writing to buffer, length %i\n", strlen("Hello world"));
             //writeBuffer("Hello world", 0, strlen("Hello world"));
 
-            //uartPrintf("Setting modulation parameters...\n");
-            //setModulationParams();
+            uartPrintf("Setting modulation parameters...\n");
+            setModulationParams();
 
-            //uartPrintf("Setting the packet params...\n");
-            //setPacketParams();
+            uartPrintf("Setting the packet params...\n");
+            setPacketParams();
          
-                      
+            sleep(100);
             uartPrintf("Going to Tx mode...\n");
+            //setTx(0);   
+ 
             setTxContinuousWave();
+            
+   
             //helpFlag = 0;
       }
       sleep(100);

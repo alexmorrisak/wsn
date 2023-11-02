@@ -133,7 +133,7 @@ void setRfFrequency(unsigned long frequency_mhz) {
     bitval = (frequency_mhz << 20);
     //bitval = frequency_mhz;
     buff[0] = 0x86;
-    if (0) {
+    if (1) {
         buff[1] = (bitval >> 24) & 0xff;
         buff[2] = (bitval >> 16) & 0xff;
         buff[3] = (bitval >> 8) & 0xff;
@@ -297,7 +297,7 @@ int getLoraSyncWord(void) {
 }
 
 
-// getStatus()
+// RxBufferStatus()
 struct RxBufferStatus {
     int PayloadLengthRx;
     int RxStartBufferPointer;
@@ -339,7 +339,23 @@ void setTxParams(char power, char rampTime) {
     buff[2] = rampTime;
     spiTransmit(buff, 3);
     spiReceive(buff);
-} 
+}
+
+
+/*
+SetPaConfig is the command which is used to differentiate the SX1261 from the SX1262. When using this command, the
+user selects the PA to be used by the device as well as its configuration.
+*/
+void setPaConfig(char paDutyCycle, char hpMax, char deviceSel) {
+    char buff[5];
+    buff[0] = 0x95;
+    buff[1] = paDutyCycle;
+    buff[2] = hpMax;
+    buff[3] = deviceSel;
+    buff[4] = 0x01; // reserved, always 1
+    spiTransmit(buff, 2);
+    spiReceive(buff);
+}
 
 void setDIO2AsRfSwitchCtrl(char enable) {
     char buff[2];
