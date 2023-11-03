@@ -30,6 +30,7 @@ void main(void){
   initSPI();
   initSPI(); // need to init this a 2nd time, otherwise SPI fails to transmit the first char. WHY?
   initUART();
+  initInterruptPin();
   sleep(1);
   _EINT();
 
@@ -177,9 +178,16 @@ void main(void){
     // sx1262 Receive Test
     if (1) {
       if (helpFlag) {
+          
           uartPrintf("\n\n\nSetting to standby mode...\n");
           setStandby(STANDBY_RC);
+
+          uartPrintf("\n\n\nSetting to standby mode...\n");
+          clearIrqStatus(0xff);
           
+          uartPrintf("\n\n\nSetting interrupt mask...\n");
+          setDioIrqParams(0xff, 0xff, 0, 0);
+
           uartPrintf("Setting to LoRA packet type...\n");
           setPacketType(PACKET_TYPE_LORA);
 
@@ -197,21 +205,30 @@ void main(void){
           status = getStatus();
           uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
-          uartPrintf("Setting interrupt mask...\n");
-          setDioIrqParams();
+          //uartPrintf("Setting interrupt mask...\n");
+          //setDioIrqParams();
 
           uartPrintf("Setting sync word...\n");
           setLoraSyncWord(0x1424);
 
           uartPrintf("Going to Rx mode...\n");
           setRx(0);
+
+          sleep(1);
          
+          status = getStatus();
+          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
           helpFlag = 0;
       }
 
-      uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
+      //while (!radioInterruptFlag) {
+      //    LPM0; // wait for DIO interrupt from sx1262
+      //}
+      waitForInterrupt();
+      //uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
 
-      len = uartReceive(buffer); // This will block until we receive a newline
+      //len = uartReceive(buffer); // This will block until we receive a newline
       status = getStatus();
       uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 

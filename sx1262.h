@@ -3,6 +3,8 @@
 
 #include "myspi.h"
 
+int radioInterruptFlag = 0;
+
 // getStatus()
 struct Status {
     int chip_mode;
@@ -173,7 +175,7 @@ void setModulationParams(void){
     spiReceive(buff);
 }
 
-
+/*
 void setDioIrqParams(void) {
     char buff[9];
     buff[0] = 0x08;
@@ -185,7 +187,23 @@ void setDioIrqParams(void) {
     buff[6] = 0x00;
     buff[7] = 0x00;
     buff[8] = 0x00;
-    spiTransmit(buff, 4);
+    spiTransmit(buff, 9);
+    spiReceive(buff);
+}
+*/
+
+void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
+    char buff[9];
+    buff[0] = 0x08;
+    buff[1] = (irqMask >> 8) & 0xff;
+    buff[2] = (irqMask >> 0) & 0xff;;
+    buff[3] = (dio1Mask >> 8) & 0xff;;
+    buff[4] = (dio1Mask >> 0) & 0xff;;
+    buff[5] = (dio2Mask >> 8) & 0xff;;
+    buff[6] = (dio2Mask >> 0) & 0xff;;
+    buff[7] = (dio3Mask >> 8) & 0xff;;
+    buff[8] = (dio3Mask >> 0) & 0xff;;
+    spiTransmit(buff, 9);
     spiReceive(buff);
 }
 
@@ -211,8 +229,7 @@ void setPacketParams(void) {
     buff[9] = 0x00;
     spiTransmit(buff, 10);
     spiReceive(buff);
-    
-}
+  }
 
 void writeRegister(char *buffer, int address, int length) {
     char buff[64];
@@ -379,5 +396,42 @@ int getIrqStatus(void){
     irqStatus |= (buff[3] << 0);
     return irqStatus;
 }
+
+
+// This command clears an IRQ flag in the IRQ register. 
+void clearIrqStatus(int ClearIrqParam) {
+    char buff[3];
+    buff[0] = 0x02;
+    buff[1] = (ClearIrqParam >> 8) & 0xff;
+    buff[2] = (ClearIrqParam >> 0) & 0xff;
+    spiTransmit(buff, 3);
+    spiReceive(buff);
+}
+
+
+void initInterruptPin(void) {
+P1DIR &= ~BIT3;//USE P1.3 IN RF3 FOR TX/RX INTERRUPT
+P1SEL &= ~BIT3;//SET PIN TO IO MODE
+P1IE |= BIT3;//ENABLE INTERRUPT FOR P1.3
+P1IES &= ~BIT3; //RISING EDGE TRIGGER
+P1IFG = 0;
+}
+
+void waitForInterrupt(void) {
+    radioInterruptFlag = 0;
+    while (!radioInterruptFlag) {
+        LPM0; // wait for DIO interrupt from sx1262
+    }
+}
+
+void radioInterrupt(void) __interrupt [PORT1_VECTOR]{
+    P1IFG = 0;
+    radioInterruptFlag=1;
+    LPM0_EXIT;
+}
+
+
+
+
 
 #endif

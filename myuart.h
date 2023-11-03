@@ -65,7 +65,7 @@ void uartTransmit(char *buffer, int length){
     //UCA1IE &= ~UCTXIE; //DISABLE INTERRUPTS IN THE CRITICAL SECTION
 
     if (!uartTxActive) { // no transmission active. need to initiate
-        while (UCTXIFG == 0) {}; // wait until the buffer is empty
+  //      while (UCTXIFG == 0) {}; // wait until the buffer is empty
         UCA1TXBUF = uartTxBuffer[uartTxTail]; // send the first byte
         uartTxTail++;// = (uartTxTail + 1) % UART_TX_BUFFER_SIZE;
         uartTxActive = 1;
