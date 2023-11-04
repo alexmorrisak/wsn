@@ -432,6 +432,18 @@ void clearIrqStatus(int ClearIrqParam) {
 }
 
 
+char getPacketStatus(void) {
+    char buff[5];
+    buff[0] = 0x14;
+    buff[1] = 0x00;
+    buff[2] = 0x00;
+    buff[3] = 0x00;
+    buff[4] = 0x00;
+    spiTransmit(buff, 5);
+    spiReceive(buff);
+    return buff[4];
+}
+
 void initInterruptPin(void) {
     P1DIR &= ~BIT3;//USE P1.3 IN RF3 FOR TX/RX INTERRUPT
     P1SEL &= ~BIT3;//SET PIN TO IO MODE

@@ -22,6 +22,7 @@ void main(void){
   int syncword = 0;
   int irqStatus;
   unsigned long freq;
+  char rssi;
   
   IncrementVcore();
   IncrementVcore();
@@ -243,13 +244,13 @@ void main(void){
       if (status.command_status == 2) {
           //irqStatus = getIrqStatus();
           //uartPrintf("Irq status: 0x%x\n", irqStatus);
-
+          rssi = getPacketStatus();
           rxBufferStatus = getRxBufferStatus();
           readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
           //data[rxBufferStatus.PayloadLengthRx] = '\0';
           //uartPrintf("Received this many bytes: %i\n", rxBufferStatus.PayloadLengthRx);
           //uartPrintf("Received packet starts at this address: %i\n", rxBufferStatus.RxStartBufferPointer);
-          uartPrintf("Received a packet of length %i: ", rxBufferStatus.PayloadLengthRx);
+          uartPrintf("Received a packet of length %i, RSSI %i dBm: ", rxBufferStatus.PayloadLengthRx, -rssi/2);
           for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
               uartPrintf("%02x", data[i]);
           }
