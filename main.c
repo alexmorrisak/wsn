@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 
+
 void main(void){
   int i, j, len;
   int helpFlag = 1;
@@ -182,11 +183,8 @@ void main(void){
           uartPrintf("\n\n\nSetting to standby mode...\n");
           setStandby(STANDBY_RC);
 
-          uartPrintf("\n\n\nSetting to standby mode...\n");
-          clearIrqStatus(0xff);
-          
-          uartPrintf("\n\n\nSetting interrupt mask...\n");
-          setDioIrqParams(0xff, 0xff, 0, 0);
+          status = getStatus();
+          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
           uartPrintf("Setting to LoRA packet type...\n");
           setPacketType(PACKET_TYPE_LORA);
@@ -202,46 +200,60 @@ void main(void){
 
           uartPrintf("Setting the packet params...\n");
           setPacketParams();
-          status = getStatus();
-          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
-          //uartPrintf("Setting interrupt mask...\n");
-          //setDioIrqParams();
+          uartPrintf("Setting interrupt mask...\n");
+          //setDioIrqParams(0xff, 0xff, 0, 0); // turn on all interrupts, map them to DIO1
+          setDioIrqParams(0x02, 0xff, 0, 0); // turn on RXDONE interrupts, map all to DIO1
 
-          uartPrintf("Setting sync word...\n");
           setLoraSyncWord(0x1424);
-
-          uartPrintf("Going to Rx mode...\n");
-          setRx(0);
-
-          sleep(1);
-         
-          status = getStatus();
-          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
           helpFlag = 0;
       }
+      clearIrqStatus(0xff);
+      //uartPrintf("IrqStatus: 0x%x\n", getIrqStatus());
 
-      //while (!radioInterruptFlag) {
-      //    LPM0; // wait for DIO interrupt from sx1262
-      //}
+
+      //uartPrintf("Setting sync word...\n");
+
+
+
+      //uartPrintf("Going to Rx mode...\n");
+      setRx(0);
+      //status = getStatus();
+      //uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
+      //sleep(1);
+     
+      //status = getStatus();
+      //uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
+      //uartPrintf("IrqStatus: 0x%x\n", getIrqStatus());
+      //uartPrintf("Waiting for radio to receive packet...\n");
       waitForInterrupt();
-      //uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
+      //uartPrintf("Num interrupts: %lu\n", numUartDefaultInterrupts);
 
+      //uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
       //len = uartReceive(buffer); // This will block until we receive a newline
+
       status = getStatus();
-      uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+      //uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+
+      //uartPrintf("IrqStatus: 0x%x\n", getIrqStatus());
 
       if (status.command_status == 2) {
-          irqStatus = getIrqStatus();
-          uartPrintf("Irq status: 0x%x\n", irqStatus);
+          //irqStatus = getIrqStatus();
+          //uartPrintf("Irq status: 0x%x\n", irqStatus);
 
           rxBufferStatus = getRxBufferStatus();
-          //readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
+          readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
           //data[rxBufferStatus.PayloadLengthRx] = '\0';
-          uartPrintf("Received this many bytes: %i\n", rxBufferStatus.PayloadLengthRx);
+          //uartPrintf("Received this many bytes: %i\n", rxBufferStatus.PayloadLengthRx);
           //uartPrintf("Received packet starts at this address: %i\n", rxBufferStatus.RxStartBufferPointer);
-          //uartPrintf("The contents is this: %s\n", data);
+          uartPrintf("Received a packet of length %i: ", rxBufferStatus.PayloadLengthRx);
+          for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
+              uartPrintf("%02x", data[i]);
+          }
+          uartPrintf("\n");
       }
       }
 

@@ -94,10 +94,10 @@ void setFs(void) {
 }
 
 // setPacketType(char packetType)
-// packetType 0 = LoRA
-// packetType 1 = GFSK
-#define PACKET_TYPE_LORA 0
-#define PACKET_TYPE_GFSK 1
+// packetType 0 = GFSK
+// packetType 1 = LoRA
+#define PACKET_TYPE_GFSK 0
+#define PACKET_TYPE_LORA 1
 void setPacketType(char packetType) {
     int len;
     char buff[2];
@@ -133,23 +133,19 @@ void setRfFrequency(unsigned long frequency_mhz) {
     // E.g.: 915 Mhz yields 0x39300000
     unsigned long bitval;
     bitval = (frequency_mhz << 20);
-    //bitval = frequency_mhz;
     buff[0] = 0x86;
-    if (1) {
-        buff[1] = (bitval >> 24) & 0xff;
-        buff[2] = (bitval >> 16) & 0xff;
-        buff[3] = (bitval >> 8) & 0xff;
-        buff[4] = (bitval >> 0) & 0xff;
-        spiTransmit(buff, 5);
-    } else {
-        buff[1] = (bitval >> 16) & 0xff;
-        buff[2] = (bitval >> 8) & 0xff;
-        buff[3] = (bitval >> 0) & 0xff;
-        spiTransmit(buff, 4);
-    }
+    buff[1] = (bitval >> 24) & 0xff;
+    buff[2] = (bitval >> 16) & 0xff;
+    buff[3] = (bitval >> 8) & 0xff;
+    buff[4] = (bitval >> 0) & 0xff;
+    spiTransmit(buff, 5);
     spiReceive(buff);
 }
 
+/*
+This command sets the base addresses in the data buffer in all modes of operations for the packet handing operation in TX
+and RX mode. The usage and definition of those parameters are described in the different packet type sections.
+*/
 void setBufferBaseAddress(char txAddr, char rxAddr){
     int len;
     char buff[3];
@@ -160,6 +156,10 @@ void setBufferBaseAddress(char txAddr, char rxAddr){
     len = spiReceive(buff);
 }
 
+/*
+The command SetModulationParams(...) is used to configure the modulation parameters of the radio. Depending on the
+packet type selected prior to calling this function, the parameters will be interpreted differently by the chip. 
+*/
 void setModulationParams(void){
     char buff[9];
     buff[0] = 0x8B;
@@ -192,6 +192,7 @@ void setDioIrqParams(void) {
 }
 */
 
+/* This command is used to set the IRQ flag. */
 void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
     char buff[9];
     buff[0] = 0x08;
@@ -207,8 +208,7 @@ void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
     spiReceive(buff);
 }
 
-// This command is used to set the parameters of the packet handling block.
-
+/*This command is used to set the parameters of the packet handling block.*/
 void setPacketParams(void) {
     unsigned int preambleLength = 65535;
     char headerType = 0; // 0x00 = variable (explicit). 0x01 = fixed (implicit)
@@ -231,6 +231,11 @@ void setPacketParams(void) {
     spiReceive(buff);
   }
 
+/*
+The command WriteRegister(...) allows writing a block of bytes in a data memory space starting at a specific address. The
+address is auto incremented after each data byte so that data is stored in contiguous memory locations. The SPI data
+transfer is described in the following table
+*/
 void writeRegister(char *buffer, int address, int length) {
     char buff[64];
     int i, len;
@@ -245,6 +250,11 @@ void writeRegister(char *buffer, int address, int length) {
 }
 
 
+/*
+The command ReadRegister(...) allows reading a block of data starting at a given address. The address is auto-incremented
+after each byte. The SPI data transfer is described in Table 13-25. Note that the host has to send an NOP after sending the 2
+bytes of address to start receiving data bytes on the next NOP sent.
+*/
 void readRegister(char *data, int address, int length) {
     char buff[64];
     int i;
@@ -264,6 +274,11 @@ void readRegister(char *data, int address, int length) {
     }
 }
 
+/*
+This function is used to store data payload to be transmitted. The address is auto-incremented; when it exceeds the value
+of 255 it is wrapped back to 0 due to the circular nature of the data buffer. The address starts with an offset set as a
+parameter of the function. Table 13-26 describes the SPI data transfer.
+*/
 void writeBuffer(char *data, int offset, int length) {
     char buff[64];
     int i, len;
@@ -276,7 +291,10 @@ void writeBuffer(char *data, int offset, int length) {
     len = spiReceive(buff);
 }
 
-
+/*
+This function allows reading (n-3) bytes of payload received starting at offset. Note that the NOP must be sent after sending
+the offset.
+*/
 void readBuffer(char *data, int offset, int length) {
     char buff[64];
     int i, len;
@@ -304,6 +322,7 @@ void setLoraSyncWord(int syncword) {
     writeRegister(buff, 0x0740, 2);
 }
 
+// Reads the register location corresponding to the LoRA sync word
 int getLoraSyncWord(void) {
     unsigned int syncword = 0;
     char buff[2];
@@ -312,7 +331,6 @@ int getLoraSyncWord(void) {
     syncword += (buff[1] << 0);
     return syncword;
 }
-
 
 // RxBufferStatus()
 struct RxBufferStatus {
@@ -374,6 +392,11 @@ void setPaConfig(char paDutyCycle, char hpMax, char deviceSel) {
     spiReceive(buff);
 }
 
+/*
+This command is used to configure DIO2 so that it can be used to control an external RF switch.
+1 = enable
+0 = disable
+*/
 void setDIO2AsRfSwitchCtrl(char enable) {
     char buff[2];
     buff[0] = 0x9D;
@@ -410,15 +433,16 @@ void clearIrqStatus(int ClearIrqParam) {
 
 
 void initInterruptPin(void) {
-P1DIR &= ~BIT3;//USE P1.3 IN RF3 FOR TX/RX INTERRUPT
-P1SEL &= ~BIT3;//SET PIN TO IO MODE
-P1IE |= BIT3;//ENABLE INTERRUPT FOR P1.3
-P1IES &= ~BIT3; //RISING EDGE TRIGGER
-P1IFG = 0;
+    P1DIR &= ~BIT3;//USE P1.3 IN RF3 FOR TX/RX INTERRUPT
+    P1SEL &= ~BIT3;//SET PIN TO IO MODE
+    P1IE |= BIT3;//ENABLE INTERRUPT FOR P1.3
+    P1IES &= ~BIT3; //RISING EDGE TRIGGER
+    P1IFG = 0;
 }
 
 void waitForInterrupt(void) {
     radioInterruptFlag = 0;
+    if (getIrqStatus() > 0) return;
     while (!radioInterruptFlag) {
         LPM0; // wait for DIO interrupt from sx1262
     }
@@ -429,8 +453,6 @@ void radioInterrupt(void) __interrupt [PORT1_VECTOR]{
     radioInterruptFlag=1;
     LPM0_EXIT;
 }
-
-
 
 
 
