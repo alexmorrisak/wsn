@@ -91,7 +91,6 @@ int uartPrintf(char *format, ...) {
 
 void uartInterrupt(void) __interrupt [USCI_A1_VECTOR]{
     int wakeFlag = 0;
- 
     switch (UCA1IV) {
         case 0x2: // Rx interrupt
             uartRxBuffer[uartRxHead] = UCA1RXBUF;
@@ -115,7 +114,8 @@ void uartInterrupt(void) __interrupt [USCI_A1_VECTOR]{
             break;
         default:
             break;
-     }   
+     } 
+
     
 }
 
