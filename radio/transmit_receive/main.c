@@ -58,6 +58,9 @@ void main(void){
     uartPrintf("Setting PA Config...\n");
     setPaConfig(0x04, 0x03, 0x00);
 
+    sleep(1);
+    setDIO2AsRfSwitchCtrl(1);
+
     uartPrintf("Setting buffer base addresses...\n");
     setBufferBaseAddress(0, 128);
 
@@ -86,8 +89,7 @@ void main(void){
         uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
         */
 
-        sleep(1);
-        setDIO2AsRfSwitchCtrl(1);
+
 
         sleep(1);
         uartPrintf("\n\n\nSetting to standby mode...\n");
@@ -136,8 +138,21 @@ void main(void){
 
           // Figure out to send a transmit packet
           writeBuffer(buffer, 0, strlen(buffer)); // put our payload data in the radio's buffer
+
+          sleep(1);
+          setStandby(STANDBY_RC);
+          sleep(1);
           setTx(0); // transmit the packet
-          sleep(1); // wait a little while. we'll almost certainly be done transmitting after sleeping
+          
+          status = getStatus();
+          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+          
+          while(status.chip_mode != 2) {
+            status = getStatus();
+            uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+            sleep(10); // wait a little while. we'll almost certainly be done transmitting after sleeping
+          }
+
           /*
           irqStatus = 0;
           while (!(irqStatus & 0x1)) {
