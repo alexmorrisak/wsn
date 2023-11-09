@@ -50,8 +50,16 @@ void main(void){
     uartPrintf("Setting RF frequency to 915 MHz...\n");
     setRfFrequency(915);
 
+    sleep(1);
+    uartPrintf("Setting Tx params...\n");
+    setTxParams(0x06, 0x07);
+
+    sleep(1);
+    uartPrintf("Setting PA Config...\n");
+    setPaConfig(0x04, 0x03, 0x00);
+
     uartPrintf("Setting buffer base addresses...\n");
-    setBufferBaseAddress(0, 10);
+    setBufferBaseAddress(0, 128);
 
     uartPrintf("Setting modulation parameters...\n");
     setModulationParams();
@@ -86,8 +94,6 @@ void main(void){
         setStandby(STANDBY_RC);
 
         //sleep(100);
-        uartPrintf("Setting PA Config...\n");
-        setPaConfig(0x04, 0x03, 0x00);
 
         /*
         sleep(1);
@@ -96,9 +102,7 @@ void main(void){
         setRfFrequency(freq);
         */
 
-        sleep(1);
-        uartPrintf("Setting Tx params...\n");
-        setTxParams(0x06, 0x07);
+
 
         uartPrintf("Setting modulation parameters...\n");
         setModulationParams();
@@ -131,7 +135,18 @@ void main(void){
           uartPrintf("You entered: %s\n", buffer);
 
           // Figure out to send a transmit packet
-
+          writeBuffer(buffer, 0, strlen(buffer)); // put our payload data in the radio's buffer
+          setTx(0); // transmit the packet
+          sleep(1); // wait a little while. we'll almost certainly be done transmitting after sleeping
+          /*
+          irqStatus = 0;
+          while (!(irqStatus & 0x1)) {
+            waitForInterrupt();
+            irqStatus = getIrqStatus(); // check type of interrupt flag on radio
+          }
+          */
+          
+          // 
 
       } else { // Got a LORA packet
           //uartPrintf("Num interrupts: %lu\n", numUartDefaultInterrupts);
