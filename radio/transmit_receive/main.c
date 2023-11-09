@@ -48,7 +48,7 @@ void main(void){
     setPacketType(PACKET_TYPE_LORA);
 
     uartPrintf("Setting RF frequency to 915 MHz...\n");
-    setRfFrequency(915);
+    setRfFrequency(100);
 
     sleep(1);
     uartPrintf("Setting Tx params...\n");
@@ -77,51 +77,6 @@ void main(void){
     setLoraSyncWord(0x1424);
 
 
-    if (0) { // initialize transmit
-        /* sx1262 Transmit Test
-        uartPrintf("Enter RF frequency setting\n>> ");
-        len = uartReceive(buffer); // This will block until we receive a newline
-        buffer[len] = '\0';
-        freq = atol(buffer);
-        uartPrintf("You entered: %lu\n", freq);
-
-        status = getStatus();
-        uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
-        */
-
-
-
-        sleep(1);
-        uartPrintf("\n\n\nSetting to standby mode...\n");
-        setStandby(STANDBY_RC);
-
-        //sleep(100);
-
-        /*
-        sleep(1);
-        freq = 915;
-        uartPrintf("Setting RF frequency to %lu MHz...\n", freq);
-        setRfFrequency(freq);
-        */
-
-
-
-        uartPrintf("Setting modulation parameters...\n");
-        setModulationParams();
-
-        uartPrintf("Setting the packet params...\n");
-        setPacketParams();
-
-        //sleep(100);
-        uartPrintf("Going to Tx mode...\n");
-
-        //setTxContinuousWave();
-
-        sleep(1);
-        status = getStatus();
-        uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
-     }
-
       while (1) {
       clearIrqStatus(0xff);
       setRx(0);
@@ -133,16 +88,17 @@ void main(void){
       if (uartRxMsgAvailable) { // Got something on the UART
           len = uartReceive(buffer); // This will block until we receive a newline
           buffer[len] = '\0';
-          freq = atol(buffer);
-          uartPrintf("You entered: %s\n", buffer);
-
-          // Figure out to send a transmit packet
-          writeBuffer(buffer, 0, strlen(buffer)); // put our payload data in the radio's buffer
+          uartPrintf("You entered (%i bytes): %s\n", len, buffer);
 
           sleep(1);
           setStandby(STANDBY_RC);
+
+          // Figure out to send a transmit packet
+          writeBuffer(buffer, 0, len); // put our payload data in the radio's buffer
+
           sleep(1);
-          setTx(0); // transmit the packet
+          //setTx(50000); // transmit the packet
+          setTxContinuousWave();
           
           status = getStatus();
           uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
