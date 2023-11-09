@@ -36,89 +36,87 @@ void main(void){
   sleep(1);
   _EINT();
 
-  while (1) {
-    // sx1262 Receive Test
-      if (helpFlag) {
-        
-          uartPrintf("\n\n\nSetting to standby mode...\n");
-          setStandby(STANDBY_RC);
 
-          status = getStatus();
-          uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+    // Initialize the radio
+    uartPrintf("\n\n\nSetting to standby mode...\n");
+    setStandby(STANDBY_RC);
 
-          uartPrintf("Setting to LoRA packet type...\n");
-          setPacketType(PACKET_TYPE_LORA);
+    status = getStatus();
+    uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
 
-          uartPrintf("Setting RF frequency to 915 MHz...\n");
-          setRfFrequency(915);
+    uartPrintf("Setting to LoRA packet type...\n");
+    setPacketType(PACKET_TYPE_LORA);
 
-          uartPrintf("Setting buffer base addresses...\n");
-          setBufferBaseAddress(0, 10);
+    uartPrintf("Setting RF frequency to 915 MHz...\n");
+    setRfFrequency(915);
 
-          uartPrintf("Setting modulation parameters...\n");
-          setModulationParams();
+    uartPrintf("Setting buffer base addresses...\n");
+    setBufferBaseAddress(0, 10);
 
-          uartPrintf("Setting the packet params...\n");
-          setPacketParams();
+    uartPrintf("Setting modulation parameters...\n");
+    setModulationParams();
 
-          uartPrintf("Setting interrupt mask...\n");
-          //setDioIrqParams(0xff, 0xff, 0, 0); // turn on all interrupts, map them to DIO1
-          setDioIrqParams(0x02, 0xff, 0, 0); // turn on RXDONE interrupts, map all to DIO1
+    uartPrintf("Setting the packet params...\n");
+    setPacketParams();
 
-          setLoraSyncWord(0x1424);
+    uartPrintf("Setting interrupt mask...\n");
+    //setDioIrqParams(0xff, 0xff, 0, 0); // turn on all interrupts, map them to DIO1
+    setDioIrqParams(0x02, 0xff, 0, 0); // turn on RXDONE interrupts, map all  to DIO1
+
+    setLoraSyncWord(0x1424);
 
 
-          if (0) { // initialize transmit
-              /* sx1262 Transmit Test
-              uartPrintf("Enter RF frequency setting\n>> ");
-              len = uartReceive(buffer); // This will block until we receive a newline
-              buffer[len] = '\0';
-              freq = atol(buffer);
-              uartPrintf("You entered: %lu\n", freq);
+    if (0) { // initialize transmit
+        /* sx1262 Transmit Test
+        uartPrintf("Enter RF frequency setting\n>> ");
+        len = uartReceive(buffer); // This will block until we receive a newline
+        buffer[len] = '\0';
+        freq = atol(buffer);
+        uartPrintf("You entered: %lu\n", freq);
 
-              status = getStatus();
-              uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
-              */
+        status = getStatus();
+        uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+        */
 
-              sleep(1);
-              setDIO2AsRfSwitchCtrl(1);
+        sleep(1);
+        setDIO2AsRfSwitchCtrl(1);
 
-              sleep(1);
-              uartPrintf("\n\n\nSetting to standby mode...\n");
-              setStandby(STANDBY_RC);
+        sleep(1);
+        uartPrintf("\n\n\nSetting to standby mode...\n");
+        setStandby(STANDBY_RC);
 
-              //sleep(100);
-              uartPrintf("Setting PA Config...\n");
-              setPaConfig(0x04, 0x03, 0x00);
+        //sleep(100);
+        uartPrintf("Setting PA Config...\n");
+        setPaConfig(0x04, 0x03, 0x00);
 
-              sleep(1);
-              freq = 915;
-              uartPrintf("Setting RF frequency to %lu MHz...\n", freq);
-              setRfFrequency(freq);
+        /*
+        sleep(1);
+        freq = 915;
+        uartPrintf("Setting RF frequency to %lu MHz...\n", freq);
+        setRfFrequency(freq);
+        */
 
-              sleep(1);
-              uartPrintf("Setting Tx params...\n");
-              setTxParams(0x06, 0x07);
+        sleep(1);
+        uartPrintf("Setting Tx params...\n");
+        setTxParams(0x06, 0x07);
 
-              uartPrintf("Setting modulation parameters...\n");
-              setModulationParams();
+        uartPrintf("Setting modulation parameters...\n");
+        setModulationParams();
 
-              uartPrintf("Setting the packet params...\n");
-              setPacketParams();
+        uartPrintf("Setting the packet params...\n");
+        setPacketParams();
 
-              //sleep(100);
-              uartPrintf("Going to Tx mode...\n");
+        //sleep(100);
+        uartPrintf("Going to Tx mode...\n");
 
-              //setTxContinuousWave();
+        //setTxContinuousWave();
 
-              sleep(1);
-              status = getStatus();
-              uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
-          }
+        sleep(1);
+        status = getStatus();
+        uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
+     }
 
-
-          helpFlag = 0;
-      }
+      while (1) {
       clearIrqStatus(0xff);
       setRx(0);
 
@@ -131,6 +129,10 @@ void main(void){
           buffer[len] = '\0';
           freq = atol(buffer);
           uartPrintf("You entered: %s\n", buffer);
+
+          // Figure out to send a transmit packet
+
+
       } else { // Got a LORA packet
           //uartPrintf("Num interrupts: %lu\n", numUartDefaultInterrupts);
           //uartPrintf("Press enter to get status info. Command status == 2 means we got a packet. \n>> ");
