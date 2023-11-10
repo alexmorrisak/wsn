@@ -60,8 +60,6 @@
  </Memory4>
  <Project>
   <ProjectSessionItem path="wsn"/>
-  <ProjectSessionItem path="wsn;test_uart"/>
-  <ProjectSessionItem path="wsn;test_uart;Source Files"/>
   <ProjectSessionItem path="wsn;transmit_receive"/>
   <ProjectSessionItem path="wsn;transmit_receive;Source Files"/>
   <SourceCodeControlLogin password="F9BB6682F5D56822" user=""/>
@@ -126,11 +124,12 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="93" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/myuart.h" selected="0" top="85" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="12" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="radio/transmit_receive/main.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="20" y="458" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/sx1262.h" selected="0" top="436" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="8" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/test_uart/main.c" selected="1" top="0" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="15" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="radio/transmit_cw/main.c" selected="0" top="0" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="10" y="58" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/myuart.h" selected="0" top="37" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="15" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="radio/transmit_receive/main.c" selected="1" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="12" y="317" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/sx1262.h" selected="0" top="296" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="13" y="9" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/test_uart/main.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="26" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="radio/transmit_cw/main.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="114" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/miscellaneous.h" selected="0" top="93" codecName="Default"/>
  </Files>
- <MSP430CrossStudioWindow activeProject="test_uart" fileDialogDefaultFilter="*" autoConnectTarget="MSP-FET/MSP-FET430UIF/eZ-FET" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/include" debugSearchPath="" autoConnectCapabilities="528255"/>
+ <MSP430CrossStudioWindow activeProject="transmit_receive" fileDialogDefaultFilter="*" autoConnectTarget="MSP-FET/MSP-FET430UIF/eZ-FET" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/include" debugSearchPath="" autoConnectCapabilities="528255"/>
 </session>

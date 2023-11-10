@@ -210,10 +210,11 @@ void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
 
 /*This command is used to set the parameters of the packet handling block.*/
 void setPacketParams(void) {
-    unsigned int preambleLength = 65535;
+    //     unsigned int preambleLength = 65535;
+    unsigned int preambleLength = 512;
     char headerType = 0; // 0x00 = variable (explicit). 0x01 = fixed (implicit)
-    char payloadLength = 0xa; // length in bytes. 0x00 to 0xff
-    char CRCType = 0; // 0=off, 1=On
+    char payloadLength = 16; // length in bytes. 0x00 to 0xff
+    char CRCType = 1; // 0=off, 1=On
     char InvertIQ = 0; // 0=standard, 1=inverted
     char buff[10];
     

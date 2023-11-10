@@ -56,7 +56,7 @@ void uartTransmit(char *buffer, int length){
 
     for (i=0; i<length; i++) {
         while ((newHead+1) == uartTxTail) {
-        toggleLED();
+        //toggleLED();
         }; // buffer is full. wait
         uartTxBuffer[newHead] = buffer[i];
         newHead++;

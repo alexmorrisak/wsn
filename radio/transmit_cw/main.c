@@ -76,7 +76,7 @@ void main(void){
     uartPrintf("Going to Tx mode...\n");
 
     setTxContinuousWave();
-
+    
     sleep(1);
     status = getStatus();
     uartPrintf("Chip mode: %x\nCommand status: %x\n", status.chip_mode, status.command_status);
