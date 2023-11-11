@@ -192,6 +192,9 @@ void setDioIrqParams(void) {
 }
 */
 
+#define IRQ_TXDONE 0x1
+#define IRQ_RXDONE 0x2
+#define IRQ_TIMEOUT 0x10
 /* This command is used to set the IRQ flag. */
 void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
     char buff[9];
@@ -211,7 +214,7 @@ void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
 /*This command is used to set the parameters of the packet handling block.*/
 void setPacketParams(void) {
     //     unsigned int preambleLength = 65535;
-    unsigned int preambleLength = 512;
+    unsigned int preambleLength = 12;
     char headerType = 0; // 0x00 = variable (explicit). 0x01 = fixed (implicit)
     char payloadLength = 16; // length in bytes. 0x00 to 0xff
     char CRCType = 1; // 0=off, 1=On

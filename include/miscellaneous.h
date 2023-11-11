@@ -118,7 +118,7 @@ initClock(void) {
 
 void sleep(int i) {
   int j;
-  for(i=0;i<1000;i++){
+  for(i=0;i<100;i++){
     for (j=0;j<1000;j++){
     }
   }
