@@ -7,8 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-
 void main(void){
     int i, j, len;
     char npackets=0;
@@ -130,17 +128,17 @@ void main(void){
             rxBufferStatus = getRxBufferStatus();
             readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
             uartPrintf("Received a packet. length: %i, RSSI: %.1f dBm, data: ", rxBufferStatus.PayloadLengthRx, -1*rssi/2.);
-            for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
-                uartPrintf("%02x", data[i]);
-            }
-            uartPrintf("\n");
-            data[rxBufferStatus.PayloadLengthRx] = '\0';
-            //uartPrintf("In ASCII format: %s\n", data);
-            //uartPrintf("In ASCII format: ");
             //for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
-            //    uartPrintf("%c", data[i]);
+            //    uartPrintf("%02x", data[i]);
             //}
             //uartPrintf("\n");
+            data[rxBufferStatus.PayloadLengthRx] = '\0';
+            uartPrintf("In ASCII format: %s\n", data);
+            uartPrintf("In ASCII format: ");
+            for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
+                uartPrintf("%c", data[i]);
+            }
+            uartPrintf("\n");
         }
     }// end while loop
 }

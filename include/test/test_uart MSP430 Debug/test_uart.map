@@ -4,10 +4,10 @@ SYMBOLS BY NAME
     5dfa CODE       _IncrementVcore     
     5d0a CONST      ___RAL_hex_lc       
     5cfa CONST      ___RAL_hex_uc       
-    61ec CODE       ___RAL_pow10f       
-    62aa CODE       ___RAL_pre_padding  
-    628c CODE       ___RAL_print_padding
-    7bda CODE       ___RAL_read_tp      
+    61da CODE       ___RAL_pow10f       
+    6298 CODE       ___RAL_pre_padding  
+    627a CODE       ___RAL_print_padding
+    7bc8 CODE       ___RAL_read_tp      
     1c00            ___RAM_Address      
     4000            ___RAM_Size         
     1c00            ___begin_IDATA0     
@@ -25,64 +25,63 @@ SYMBOLS BY NAME
     1c08            ___end_IDATA0       
     1f0c            ___end_THREAD       
     1f0a            ___end_UDATA0       
-    62e4 CODE       ___errno            
-    7536 CODE       ___float32_add      
-    770c CODE       ___float32_div      
-    77e6 CODE       ___float32_eq       
-    74f4 CODE       ___float32_isinf    
-    750e CODE       ___float32_isnan    
-    77ca CODE       ___float32_lt       
-    7634 CODE       ___float32_mul      
+    62d2 CODE       ___errno            
+    7524 CODE       ___float32_add      
+    76fa CODE       ___float32_div      
+    77d4 CODE       ___float32_eq       
+    74e2 CODE       ___float32_isinf    
+    74fc CODE       ___float32_isnan    
+    77b8 CODE       ___float32_lt       
+    7622 CODE       ___float32_mul      
     5df6 CONST      ___float32_nan      
-    7526 CODE       ___float32_signbit  
-    7628 CODE       ___float32_sub      
-    7840 CODE       ___float32_to_int32 
-    604e CODE       ___int16_div        
-    6074 CODE       ___int16_mod        
-    609a CODE       ___int16_mul        
-    60b0 CODE       ___int64_lsr        
-    6242 CODE       ___putc             
-    6130 CODE       ___uint16_div       
-    6148 CODE       ___uint32_div       
-    6152 CODE       ___uint32_divmod    
-    617a CODE       ___uint32_mod       
-    77f6 CODE       ___uint32_to_float32
-    6188 CODE       ___uint64_div       
-    61b0 CODE       ___uint64_divmod    
-    6110 CODE       ___uint64_mod       
+    7514 CODE       ___float32_signbit  
+    7616 CODE       ___float32_sub      
+    782e CODE       ___float32_to_int32 
+    603c CODE       ___int16_div        
+    6062 CODE       ___int16_mod        
+    6088 CODE       ___int16_mul        
+    609e CODE       ___int64_lsr        
+    6230 CODE       ___putc             
+    611e CODE       ___uint16_div       
+    6136 CODE       ___uint32_div       
+    6140 CODE       ___uint32_divmod    
+    6168 CODE       ___uint32_mod       
+    77e4 CODE       ___uint32_to_float32
+    6176 CODE       ___uint64_div       
+    619e CODE       ___uint64_divmod    
+    60fe CODE       ___uint64_mod       
     1f08 UDATA0     ___user_format_extender
-    6360 CODE       ___vfprintf         
-    6360 CODE       ___vfprintf_float_long_long
-    62d4 CODE       _abs                
-    7b74 CODE       _fabsf              
-    7920 CODE       _floorf             
-    79f0 CODE       _fmodf              
-    7bb6 CODE       _frexpf             
-    5ea6 CODE       _initClock          
-    5eec CODE       _initUART           
-    7b7a CODE       _ldexpf             
-    5fe4 CODE       _main               
-    6330 CODE       _memcpy             
-    6340 CODE       _memset             
-    788a CODE       _modff              
-    5ed6 CODE       _sleep              
-    6350 CODE       _strlen             
-    62ee CODE       _strnlen            
-    5e9c CODE       _toggleLED          
+    634e CODE       ___vfprintf         
+    634e CODE       ___vfprintf_float_long_long
+    62c2 CODE       _abs                
+    7b62 CODE       _fabsf              
+    790e CODE       _floorf             
+    79de CODE       _fmodf              
+    7ba4 CODE       _frexpf             
+    5e9c CODE       _initClock          
+    5ee2 CODE       _initUART           
+    7b68 CODE       _ldexpf             
+    5fd2 CODE       _main               
+    631e CODE       _memcpy             
+    632e CODE       _memset             
+    7878 CODE       _modff              
+    5ecc CODE       _sleep              
+    633e CODE       _strlen             
+    62dc CODE       _strnlen            
     5c00 ISR        _uartInterrupt      
-    5fb0 CODE       _uartPrintf         
+    5f9e CODE       _uartPrintf         
     1c08 UDATA0     _uartPrintfBuffer   
-    5f28 CODE       _uartReceive        
+    5f1e CODE       _uartReceive        
     1d08 UDATA0     _uartRxBuffer       
     1c02 IDATA0     _uartRxHead         
     1c04 IDATA0     _uartRxMsgAvailable 
     1c03 IDATA0     _uartRxTail         
-    5f5c CODE       _uartTransmit       
+    5f52 CODE       _uartTransmit       
     1c06 IDATA0     _uartTxActive       
     1e08 UDATA0     _uartTxBuffer       
     1c00 IDATA0     _uartTxHead         
     1c01 IDATA0     _uartTxTail         
-    6308 CODE       _vsprintf           
+    62f6 CODE       _vsprintf           
     5cf8 CONST      thread_init_begin   
     5cfa CONST      thread_init_end     
 
@@ -99,8 +98,8 @@ SYMBOLS BY VALUE
      4e8            ___crt_res2         
      4ea            ___crt_res3         
     1c00            ___begin_IDATA0     
-    1c00            ___RAM_Address      
     1c00 IDATA0     _uartTxHead         
+    1c00            ___RAM_Address      
     1c01 IDATA0     _uartTxTail         
     1c02 IDATA0     _uartRxHead         
     1c03 IDATA0     _uartRxTail         
@@ -123,53 +122,52 @@ SYMBOLS BY VALUE
     5d0a CONST      ___RAL_hex_lc       
     5df6 CONST      ___float32_nan      
     5dfa CODE       _IncrementVcore     
-    5e9c CODE       _toggleLED          
-    5ea6 CODE       _initClock          
-    5ed6 CODE       _sleep              
-    5eec CODE       _initUART           
-    5f28 CODE       _uartReceive        
-    5f5c CODE       _uartTransmit       
-    5fb0 CODE       _uartPrintf         
-    5fe4 CODE       _main               
-    604e CODE       ___int16_div        
-    6074 CODE       ___int16_mod        
-    609a CODE       ___int16_mul        
-    60b0 CODE       ___int64_lsr        
-    6110 CODE       ___uint64_mod       
-    6130 CODE       ___uint16_div       
-    6148 CODE       ___uint32_div       
-    6152 CODE       ___uint32_divmod    
-    617a CODE       ___uint32_mod       
-    6188 CODE       ___uint64_div       
-    61b0 CODE       ___uint64_divmod    
-    61ec CODE       ___RAL_pow10f       
-    6242 CODE       ___putc             
-    628c CODE       ___RAL_print_padding
-    62aa CODE       ___RAL_pre_padding  
-    62d4 CODE       _abs                
-    62e4 CODE       ___errno            
-    62ee CODE       _strnlen            
-    6308 CODE       _vsprintf           
-    6330 CODE       _memcpy             
-    6340 CODE       _memset             
-    6350 CODE       _strlen             
-    6360 CODE       ___vfprintf         
-    6360 CODE       ___vfprintf_float_long_long
-    74f4 CODE       ___float32_isinf    
-    750e CODE       ___float32_isnan    
-    7526 CODE       ___float32_signbit  
-    7536 CODE       ___float32_add      
-    7628 CODE       ___float32_sub      
-    7634 CODE       ___float32_mul      
-    770c CODE       ___float32_div      
-    77ca CODE       ___float32_lt       
-    77e6 CODE       ___float32_eq       
-    77f6 CODE       ___uint32_to_float32
-    7840 CODE       ___float32_to_int32 
-    788a CODE       _modff              
-    7920 CODE       _floorf             
-    79f0 CODE       _fmodf              
-    7b74 CODE       _fabsf              
-    7b7a CODE       _ldexpf             
-    7bb6 CODE       _frexpf             
-    7bda CODE       ___RAL_read_tp      
+    5e9c CODE       _initClock          
+    5ecc CODE       _sleep              
+    5ee2 CODE       _initUART           
+    5f1e CODE       _uartReceive        
+    5f52 CODE       _uartTransmit       
+    5f9e CODE       _uartPrintf         
+    5fd2 CODE       _main               
+    603c CODE       ___int16_div        
+    6062 CODE       ___int16_mod        
+    6088 CODE       ___int16_mul        
+    609e CODE       ___int64_lsr        
+    60fe CODE       ___uint64_mod       
+    611e CODE       ___uint16_div       
+    6136 CODE       ___uint32_div       
+    6140 CODE       ___uint32_divmod    
+    6168 CODE       ___uint32_mod       
+    6176 CODE       ___uint64_div       
+    619e CODE       ___uint64_divmod    
+    61da CODE       ___RAL_pow10f       
+    6230 CODE       ___putc             
+    627a CODE       ___RAL_print_padding
+    6298 CODE       ___RAL_pre_padding  
+    62c2 CODE       _abs                
+    62d2 CODE       ___errno            
+    62dc CODE       _strnlen            
+    62f6 CODE       _vsprintf           
+    631e CODE       _memcpy             
+    632e CODE       _memset             
+    633e CODE       _strlen             
+    634e CODE       ___vfprintf_float_long_long
+    634e CODE       ___vfprintf         
+    74e2 CODE       ___float32_isinf    
+    74fc CODE       ___float32_isnan    
+    7514 CODE       ___float32_signbit  
+    7524 CODE       ___float32_add      
+    7616 CODE       ___float32_sub      
+    7622 CODE       ___float32_mul      
+    76fa CODE       ___float32_div      
+    77b8 CODE       ___float32_lt       
+    77d4 CODE       ___float32_eq       
+    77e4 CODE       ___uint32_to_float32
+    782e CODE       ___float32_to_int32 
+    7878 CODE       _modff              
+    790e CODE       _floorf             
+    79de CODE       _fmodf              
+    7b62 CODE       _fabsf              
+    7b68 CODE       _ldexpf             
+    7ba4 CODE       _frexpf             
+    7bc8 CODE       ___RAL_read_tp      

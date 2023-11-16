@@ -192,22 +192,40 @@
       <file file_name="$(StudioDir)/src/crt0.asm" />
     </folder>
   </project>
+<<<<<<< HEAD
   <project Name="wsnFinalProject">
+=======
+  <project Name="test_timer">
+>>>>>>> 24d2a37e165ee3b40b97a073902ff53061859f07
     <configuration
       Name="Common"
       Platform="MSP430"
       Target="MSP430F5438A"
       build_use_hardware_multiplier="32-Bit Multiplier"
+<<<<<<< HEAD
       c_user_include_directories="$(ProjectDir)/../include"
+=======
+      c_user_include_directories="$(ProjectDir)/../"
+>>>>>>> 24d2a37e165ee3b40b97a073902ff53061859f07
       linker_memory_map_file="$(PackagesDir)/targets/msp430/MSP430F5438A.xml"
       linker_section_placement_file="$(StudioDir)/targets/section_placement_info_abcd_iv64.xml"
       msp430_identify_string="MSP430F5438A"
       msp430_insn_set="MSP430X"
+<<<<<<< HEAD
       project_directory="wsn final project"
       project_type="Executable" />
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;h;s;asm;inc;s43" />
       <file file_name="$(ProjectDir)/main.c" />
+=======
+      msp430_memory_size="1M"
+      project_directory="include/test_timer"
+      project_type="Executable" />
+    <folder Name="Source Files">
+      <configuration Name="Common" filter="c;h;s;asm;inc;s43" />
+      <file file_name="main.c" />
+      <file file_name="../mytimer.h" />
+>>>>>>> 24d2a37e165ee3b40b97a073902ff53061859f07
     </folder>
     <folder Name="System Files">
       <configuration Name="Common" filter="xml" />
