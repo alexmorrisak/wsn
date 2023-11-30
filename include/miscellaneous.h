@@ -108,8 +108,8 @@ initClock(void) {
   UCSCTL6 &= ~XT1OFF; // TURN ON XTL
   UCSCTL1 |= DCORSEL_5; // SET FREQ RANGE TO 5
   UCSCTL2 = 518; // SET MULTIPLIER TO 518. 518*32kHz = ~17 MHz
-  P11SEL |= BIT1 + BIT2; // set pin to mclk and smclk mode
-  P11DIR |= BIT1 + BIT2; // set to output
+  //P11SEL |= BIT1 + BIT2; // set pin to mclk and smclk mode
+  //P11DIR |= BIT1 + BIT2; // set to output
   P7SEL |= BIT0 + BIT1;
   while (UCSCTL7 & XT1LFOFFG){ //CHECK TO SEE IF XTL IS STABLE
     UCSCTL7 &= ~XT1LFOFFG;
