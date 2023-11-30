@@ -470,6 +470,21 @@ void radioInterrupt(void) __interrupt [PORT1_VECTOR]{
     LPM0_EXIT;
 }
 
+void initSX1262(void){
+    setStandby(STANDBY_RC);
+    setPacketType(PACKET_TYPE_LORA);
+    setRfFrequency(915);
+    sleep(1);
+    setTxParams(0xf7, 0x07);
+    sleep(1);
+    setPaConfig(0x02, 0x02, 0x00);
+    setDIO2AsRfSwitchCtrl(1);
+    setBufferBaseAddress(0, 128);
+    setModulationParams();
+    setPacketParams();
+    setDioIrqParams(IRQ_TXDONE | IRQ_RXDONE, 0xff, 0, 0); // turn on RXDONE interrupts, map all to DIO1
+    setLoraSyncWord(0x1424);
+}
 
 
 #endif

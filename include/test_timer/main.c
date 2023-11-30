@@ -31,7 +31,7 @@ void main(void) {
     getTime(&coarse, &fine);
     uartPrintf("Current time: %lu, %u\n", coarse, fine);
     //uartPrintf("Going to wait until: %lu\n", coarse+waitTime);
-    sleepUntil(coarse+waitTime);
+    sleepUntilPrecise(coarse+waitTime, 0);
     getTime(&coarse, &fine);
     uartPrintf("Done sleeping\n");
     uartPrintf("Current time: %lu, %u\n", coarse, fine);
