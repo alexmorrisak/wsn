@@ -7,35 +7,46 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ADC.c"
+#include "mytimer.h"
 
-int i, j, len;
-char npackets=0;
-int helpFlag = 1;
-char buffer[256];
-char data[256];
-//char uartBuffer[256];
-struct Status status;
-struct RxBufferStatus rxBufferStatus;
-char standbyMode = 0;
-char packetType = 0;
-int syncword = 0;
-int irqStatus;
-unsigned long freq;
-char rssi;
-char deviceID;
+
+int main(void) {
+    int i, j, len;
+    char npackets=0;
+    int helpFlag = 1;
+    char buffer[256];
+    char data[256];
+    //char uartBuffer[256];
+    struct Status status;
+    struct RxBufferStatus rxBufferStatus;
+    char standbyMode = 0;
+    char packetType = 0;
+    int syncword = 0;
+    int irqStatus;
+    unsigned long freq;
+    char rssi;
+    char deviceID = 0;
+    unsigned int packetNumber = 0;
+    int verbose = 1;
+
+    unsigned long coarse, tstart, waitTime;
+    unsigned int fine;
+    int islave, nslaves;
+    nslaves = 2;
   
-IncrementVcore();
-IncrementVcore();
-IncrementVcore();
+    IncrementVcore();
+    IncrementVcore();
+    IncrementVcore();
 
-initClock();
-initSPI();
-initSPI(); // need to init this a 2nd time, otherwise SPI fails to transmit the first char. WHY?
-initUART();
-initInterruptPin();
-initTemp();
-sleep(1);
-_EINT();
+    initClock();
+    initSPI();
+    initSPI(); // need to init this a 2nd time, otherwise SPI fails to transmit the first char. WHY?
+    initUART();
+    initInterruptPin();
+    initTemp();
+    initTimer();
+    sleep(1);
+    _EINT();
 
 
     // Initialize the radio
@@ -73,73 +84,82 @@ _EINT();
     setPacketParams();
 
     uartPrintf("Setting interrupt mask...\n");
-    //setDioIrqParams(0xff, 0xff, 0, 0); // turn on all interrupts, map them to DIO1
-    setDioIrqParams(IRQ_TXDONE | IRQ_RXDONE, 0xff, 0, 0); // turn on RXDONE interrupts, map all  to DIO1
+    //setDioIrqParams(0xffff, 0xffff, 0, 0); // turn on all interrupts, map them to DIO1
+    setDioIrqParams(IRQ_TXDONE | IRQ_RXDONE | IRQ_TIMEOUT, 0xffff, 0, 0); // turn on interrupts, map all to DIO1
 
     setLoraSyncWord(0x1424);
+    getTime(&tstart, &fine);
+     while (1) {
+        getTime(&coarse, &fine);
+        if (verbose) uartPrintf("Time (coarse, fine): %lu, %u\n", coarse, fine);
 
-    
-      switch(deviceID){//device ID determines master slave1 or slave2
-      case 1://master case
-        /*
-         wake up
-         go to transmit mode
-         send request for packet from other nodes
-         go to receive mode
-         slave 1 responds after xx time
-         we print its deviceID, time stamp, packet number, and temperature to UART 
-         slave 2 waits xx time and then sends its own
-         we print its deviceID, time stamp, packet number, and temperature to UART
-         everyone sleeps until 5 sec pass
-         repeat
-        */
-      
-      //start timer
-      while(1){
-        /*
-        data = getTime();
-        len = size(data);
-        writeBuffer(data, 0, len);
-        setTx();
+        uartPrintf("Sending packet #%i\n", packetNumber);
 
-        LPM0;//SLEEP UNTIL WE ARE DONE TRANSMITTING
-        setRx();
-        LPM0;//sleep till we receive message 1
-        rxBufferStatus = getRxBufferStatus();
-        readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx)
-        setRx();
-        LPM0;//sleep till we receive message 2
+        // Set the data for the data payload
+        buffer[0] = deviceID;
+        buffer[1] = (packetNumber >> 8) & 0xff;
+        buffer[2] = (packetNumber >> 0) & 0xff;
+        buffer[3] = (coarse >> 24) & 0xff;
+        buffer[4] = (coarse >> 16) & 0xff;
+        buffer[5] = (coarse >>  8) & 0xff;
+        buffer[6] = (coarse >>  0) & 0xff;
+        buffer[7] = (fine >> 8) & 0xff;
+        buffer[8] = (fine >> 0) & 0xff;
+        buffer[9] = 0x00;
+        buffer[10] = 0x00;
+        buffer[11] = 0x00;
+        buffer[12] = 0x00;
+        buffer[13] = 0x00;
+        buffer[14] = 0x00;
+        buffer[15] = 0x00;
+        writeBuffer(buffer, 0, 16);
+        
+        clearIrqStatus(0xffff);
+        setTx(0); // transmit the packet, no timeout
+        while (!radioInterruptFlag) {
+            LPM0;
+        }
+        radioInterruptFlag = 0;
+        sleep(1);
 
-        /*
-      }   
+        
+        for (islave=0; islave<nslaves; islave++) {
+          if (verbose) uartPrintf("Receiving slave %i\n", islave);
+          clearIrqStatus(0xffff);
+          sleepUntil(tstart + 10*(islave+1)-1);
+          getTime(&coarse, &fine);
+          if (verbose) uartPrintf("Time (coarse, fine): %lu, %u\n", coarse, fine);
+          setRx(3200); // 64 kHz clock ticks, 50 msec
+          // wait for a radio packet or a timeout
+          while (!radioInterruptFlag) {
+              LPM0;
+          }
+          getTime(&coarse, &fine);
+          if (verbose) uartPrintf("Time (coarse, fine): %lu, %u\n", coarse, fine);
 
-      break;
-      case 2://slave 1 case
-      /*
-        wake up
-        go into receive mode
-        receive packet request
-        wait xx time
-        load transmit buffer w deviceID, time stamp, packet number, and temperature
-        go into transmit mode
-        sleep until the start of the next frame
-      */
+          radioInterruptFlag = 0;
+          irqStatus = getIrqStatus();
+          if (verbose)  uartPrintf("Interrupt vector: 0x%04x\n", irqStatus);
+          if (irqStatus == IRQ_RXDONE) {
+              rssi = getPacketStatus();
+              rxBufferStatus = getRxBufferStatus();
+              readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
+              if (verbose) uartPrintf("Received a packet. length: %i, RSSI: %.1f dBm, data: ", rxBufferStatus.PayloadLengthRx, -1*rssi/2.);
+              for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
+                  uartPrintf("%c", data[i]);
+              }
+              uartPrintf("\n");
+           } else if (irqStatus == IRQ_TIMEOUT) {
+              if (verbose) uartPrintf("Timeout occured\n");
+           } else {
+              if (verbose) uartPrintf("Unhandled event: %04x\n", irqStatus);
+           }
+        }
+        
 
-      break;
-      case 3://slave 2 case
-      /*
-        wake up
-        go into receive mode
-        receive packet request
-        wait xx time
-        load transmit buffer w deviceID, time stamp, packet number, and temperature
-        go into transmit mode
-        sleep until the start of the next frame
-      */
-
-      break;
-
-      
-  
+        packetNumber++;
+        tstart += 1*64;
+        sleepUntil(tstart); // sleep until the next 1-second interval
+     }
 }
    

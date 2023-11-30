@@ -194,9 +194,9 @@ void setDioIrqParams(void) {
 
 #define IRQ_TXDONE 0x1
 #define IRQ_RXDONE 0x2
-#define IRQ_TIMEOUT 0x10
+#define IRQ_TIMEOUT 0x200
 /* This command is used to set the IRQ flag. */
-void setDioIrqParams(int irqMask, int dio1Mask, int dio2Mask, int dio3Mask) {
+void setDioIrqParams(unsigned int irqMask, unsigned int dio1Mask, unsigned int dio2Mask, unsigned int dio3Mask) {
     char buff[9];
     buff[0] = 0x08;
     buff[1] = (irqMask >> 8) & 0xff;
@@ -426,7 +426,7 @@ int getIrqStatus(void){
 
 
 // This command clears an IRQ flag in the IRQ register. 
-void clearIrqStatus(int ClearIrqParam) {
+void clearIrqStatus(unsigned int ClearIrqParam) {
     char buff[3];
     buff[0] = 0x02;
     buff[1] = (ClearIrqParam >> 8) & 0xff;
