@@ -9,6 +9,7 @@
 #include "ADC.c"
 #include "mytimer.h"
 
+#define NSLAVES 2
 
 int main(void) {
     int i, j, len;
@@ -27,13 +28,17 @@ int main(void) {
     char rssi;
     char deviceID = 0;
     unsigned int packetNumber = 0;
-    int verbose = 1;
+    int verbose = 0;
+      unsigned long timestamp_coarse[NSLAVES];
+    unsigned int timestamp_fine[NSLAVES];
+    unsigned int temperature[NSLAVES];
+  
 
     unsigned long coarse, tstart, waitTime;
     unsigned int fine;
     int islave, nslaves;
-    nslaves = 2;
-  
+    nslaves = NSLAVES;
+
     IncrementVcore();
     IncrementVcore();
     IncrementVcore();
@@ -93,7 +98,9 @@ int main(void) {
         getTime(&coarse, &fine);
         if (verbose) uartPrintf("Time (coarse, fine): %lu, %u\n", coarse, fine);
 
-        uartPrintf("Sending packet #%i\n", packetNumber);
+        if (verbose) {
+          uartPrintf("Sending packet #%i\n", packetNumber);
+        }
 
         // Set the data for the data payload
         buffer[0] = deviceID;
@@ -121,7 +128,6 @@ int main(void) {
         }
         radioInterruptFlag = 0;
         sleep(1);
-
         
         for (islave=0; islave<nslaves; islave++) {
           if (verbose) uartPrintf("Receiving slave %i\n", islave);
@@ -144,18 +150,40 @@ int main(void) {
               rssi = getPacketStatus();
               rxBufferStatus = getRxBufferStatus();
               readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx);
-              if (verbose) uartPrintf("Received a packet. length: %i, RSSI: %.1f dBm, data: ", rxBufferStatus.PayloadLengthRx, -1*rssi/2.);
-              for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
-                  uartPrintf("%c", data[i]);
+              if (verbose) {
+              uartPrintf("Received a packet. length: %i, RSSI: %.1f dBm, data: ", rxBufferStatus.PayloadLengthRx, -1*rssi/2.);
+                  for (i=0; i<rxBufferStatus.PayloadLengthRx; i++) {
+                      uartPrintf("%02x", data[i]);
+                  }
+                  uartPrintf("\n");
               }
-              uartPrintf("\n");
+              timestamp_coarse[islave] = 0;
+              timestamp_coarse[islave] += data[3] << 24;
+              timestamp_coarse[islave] += data[4] << 16;
+              timestamp_coarse[islave] += data[5] << 8;
+              timestamp_coarse[islave] += data[6] << 0;
+              timestamp_fine[islave] = 0;
+              timestamp_fine[islave] += data[7] << 8;
+              timestamp_fine[islave] += data[8] << 0;
+              temperature[islave] = 0;
+              temperature[islave] += data[9] << 8;
+              temperature[islave] += data[10] << 0;
            } else if (irqStatus == IRQ_TIMEOUT) {
               if (verbose) uartPrintf("Timeout occured\n");
+              timestamp_coarse[islave] = 0;
+              timestamp_fine[islave] = 0;
+              temperature[islave] = 0;
            } else {
               if (verbose) uartPrintf("Unhandled event: %04x\n", irqStatus);
            }
         }
-        
+
+        uartPrintf("%i, %lu, %u, ", packetNumber, tstart, 0); // print parameters of the master
+        for (islave=0; islave<nslaves; islave++) {
+          uartPrintf("%lu, %u, %u, ", timestamp_coarse[islave], timestamp_fine[islave], temperature[islave]); // print parameters of each slave
+        }
+        uartPrintf("\n");
+              
 
         packetNumber++;
         tstart += 1*64;
