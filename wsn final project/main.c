@@ -26,12 +26,13 @@ int main(void) {
     int irqStatus;
     unsigned long freq;
     char rssi;
-    char deviceID = 0;
+    char deviceID = 1;
     unsigned int packetNumber = 0;
     int verbose = 0;
-      unsigned long timestamp_coarse[NSLAVES];
+    unsigned long timestamp_coarse[NSLAVES];
     unsigned int timestamp_fine[NSLAVES];
     unsigned int temperature[NSLAVES];
+    int deviceId[NSLAVES];
   
 
     unsigned long coarse, tstart, waitTime;
@@ -134,7 +135,7 @@ int main(void) {
           clearIrqStatus(0xffff);
           sleepUntil(tstart + 10*(islave+1)-1);
           getTime(&coarse, &fine);
-          if (verbose) uartPrintf("Time (coarse, fine): %lu, %u\n", coarse, fine);
+          if (verbose) uartPrintf("Starting to receive at time (coarse, fine): %lu, %u\n", coarse, fine);
           setRx(3200); // 64 kHz clock ticks, 50 msec
           // wait for a radio packet or a timeout
           while (!radioInterruptFlag) {
@@ -158,8 +159,8 @@ int main(void) {
                   uartPrintf("\n");
               }
               timestamp_coarse[islave] = 0;
-              timestamp_coarse[islave] += data[3] << 24;
-              timestamp_coarse[islave] += data[4] << 16;
+              timestamp_coarse[islave] += data[3] * 2^24;
+              timestamp_coarse[islave] += data[4] * 2^16;
               timestamp_coarse[islave] += data[5] << 8;
               timestamp_coarse[islave] += data[6] << 0;
               timestamp_fine[islave] = 0;
@@ -168,6 +169,7 @@ int main(void) {
               temperature[islave] = 0;
               temperature[islave] += data[9] << 8;
               temperature[islave] += data[10] << 0;
+              deviceId[islave] = data[0];
            } else if (irqStatus == IRQ_TIMEOUT) {
               if (verbose) uartPrintf("Timeout occured\n");
               timestamp_coarse[islave] = 0;
@@ -180,7 +182,7 @@ int main(void) {
 
         uartPrintf("%i, %lu, %u, ", packetNumber, tstart, 0); // print parameters of the master
         for (islave=0; islave<nslaves; islave++) {
-          uartPrintf("%lu, %u, %u, ", timestamp_coarse[islave], timestamp_fine[islave], temperature[islave]); // print parameters of each slave
+          uartPrintf("%i, %lu, %u, %u, ", deviceId[islave], timestamp_coarse[islave], timestamp_fine[islave], temperature[islave]); // print parameters of each slave
         }
         uartPrintf("\n");
               

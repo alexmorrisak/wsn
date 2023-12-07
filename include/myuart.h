@@ -55,7 +55,7 @@ void uartTransmit(char *buffer, int length){
     newHead = uartTxHead;
 
     for (i=0; i<length; i++) {
-        while ((newHead+1) == uartTxTail) {
+        while ((newHead - uartTxTail) == 255) {
         //toggleLED();
         }; // buffer is full. wait
         uartTxBuffer[newHead] = buffer[i];
@@ -71,9 +71,7 @@ void uartTransmit(char *buffer, int length){
         uartTxActive = 1;
     }
     uartTxHead = newHead;
-
     //UCA1IE |= UCTXIE; //RE ENABLE TX INTERRUPT
-
 }
 
 int uartPrintf(char *format, ...) {
