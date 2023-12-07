@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ADC.c"
+#include <mytimer.h>
 
 int i, j, len;
 char npackets=0;
@@ -111,6 +112,7 @@ _EINT();
         LPM0;//sleep till we receive message 2
 
         /*
+        
       }   
 
       break;

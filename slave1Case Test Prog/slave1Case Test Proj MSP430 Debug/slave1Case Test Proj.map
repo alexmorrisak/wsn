@@ -1,0 +1,271 @@
+
+SYMBOLS BY NAME
+
+    606c CODE       _IncrementVcore     
+    5f7c CONST      ___RAL_hex_lc       
+    5f6c CONST      ___RAL_hex_uc       
+    6da2 CODE       ___RAL_pow10f       
+    6e60 CODE       ___RAL_pre_padding  
+    6e42 CODE       ___RAL_print_padding
+    87f6 CODE       ___RAL_read_tp      
+    1c00            ___RAM_Address      
+    4000            ___RAM_Size         
+    1c00            ___begin_IDATA0     
+    212a            ___begin_THREAD     
+    1c18            ___begin_UDATA0     
+     4c0            ___crt_mpy          
+     4d2            ___crt_mpy32h       
+     4d0            ___crt_mpy32l       
+     4c8            ___crt_op2          
+     4e2            ___crt_op2h         
+     4e0            ___crt_op2l         
+     4e8            ___crt_res2         
+     4ea            ___crt_res3         
+     4ca            ___crt_reslo        
+    1c18            ___end_IDATA0       
+    212c            ___end_THREAD       
+    212a            ___end_UDATA0       
+    6e9a CODE       ___errno            
+    80ec CODE       ___float32_add      
+    82c2 CODE       ___float32_div      
+    839c CODE       ___float32_eq       
+    80aa CODE       ___float32_isinf    
+    80c4 CODE       ___float32_isnan    
+    8380 CODE       ___float32_lt       
+    81ea CODE       ___float32_mul      
+    6068 CONST      ___float32_nan      
+    80dc CODE       ___float32_signbit  
+    81de CODE       ___float32_sub      
+    8420 CODE       ___float32_to_int16 
+    845c CODE       ___float32_to_int32 
+    6c04 CODE       ___int16_div        
+    6c2a CODE       ___int16_mod        
+    6c50 CODE       ___int16_mul        
+    6c66 CODE       ___int64_lsr        
+    6df8 CODE       ___putc             
+    6ce6 CODE       ___uint16_div       
+    83ac CODE       ___uint16_to_float32
+    6cfe CODE       ___uint32_div       
+    6d08 CODE       ___uint32_divmod    
+    6d30 CODE       ___uint32_mod       
+    83d6 CODE       ___uint32_to_float32
+    6d3e CODE       ___uint64_div       
+    6d66 CODE       ___uint64_divmod    
+    6cc6 CODE       ___uint64_mod       
+    2128 UDATA0     ___user_format_extender
+    6f16 CODE       ___vfprintf         
+    6f16 CODE       ___vfprintf_float_long_long
+    6e8a CODE       _abs                
+    67b2 CODE       _clearIrqStatus     
+    8790 CODE       _fabsf              
+    853c CODE       _floorf             
+    860c CODE       _fmodf              
+    87d2 CODE       _frexpf             
+    6776 CODE       _getIrqStatus       
+    67e0 CODE       _getPacketStatus    
+    66a4 CODE       _getRxBufferStatus  
+    62b6 CODE       _getStatus          
+    688e CODE       _getTemp            
+    68b2 CODE       _getTime            
+    610e CODE       _initClock          
+    6814 CODE       _initInterruptPin   
+    6266 CODE       _initSPI            
+    682a CODE       _initTemp           
+    68a4 CODE       _initTimer          
+    6148 CODE       _initUART           
+    1c20 UDATA0     _inter0             
+    8796 CODE       _ldexpf             
+    68dc CODE       _main               
+    6ee6 CODE       _memcpy             
+    6ef6 CODE       _memset             
+    84a6 CODE       _modff              
+    1c10 IDATA0     _myTimerCoarse      
+    1c14 IDATA0     _myTimerFine        
+    5cbc ISR        _radioInterrupt     
+    1c0c IDATA0     _radioInterruptFlag 
+    661e CODE       _readBuffer         
+    6456 CODE       _setBufferBaseAddress
+    6752 CODE       _setDIO2AsRfSwitchCtrl
+    64c8 CODE       _setDioIrqParams    
+    667e CODE       _setLoraSyncWord    
+    6484 CODE       _setModulationParams
+    671a CODE       _setPaConfig        
+    652a CODE       _setPacketParams    
+    63ca CODE       _setPacketType      
+    63f0 CODE       _setRfFrequency     
+    633e CODE       _setRx              
+    6318 CODE       _setStandby         
+    6384 CODE       _setTx              
+    66ee CODE       _setTxParams        
+    6132 CODE       _sleep              
+    68c6 CODE       _sleepUntil         
+    1c24 UDATA0     _slope              
+    5c62 ISR        _spiInterrupt       
+    1c08 IDATA0     _spiMsgLength       
+    623a CODE       _spiReceive         
+    1c28 UDATA0     _spiRxBuffer        
+    1c0b IDATA0     _spiRxDone          
+    1c0a IDATA0     _spiRxPtr           
+    6204 CODE       _spiTransmit        
+    1d28 UDATA0     _spiTxBuffer        
+    1c09 IDATA0     _spiTxPtr           
+    6f06 CODE       _strlen             
+    6ea4 CODE       _strnlen            
+    1c18 UDATA0     _temp               
+    1c1e UDATA0     _temp30             
+    1c1c UDATA0     _temp85             
+    5ccc ISR        _tempDone           
+    1c0e IDATA0     _tempFlag           
+    5d42 ISR        _timerInterrupt     
+    5c00 ISR        _uartInterrupt      
+    61d0 CODE       _uartPrintf         
+    1e28 UDATA0     _uartPrintfBuffer   
+    1f28 UDATA0     _uartRxBuffer       
+    1c02 IDATA0     _uartRxHead         
+    1c04 IDATA0     _uartRxMsgAvailable 
+    6184 CODE       _uartTransmit       
+    1c06 IDATA0     _uartTxActive       
+    2028 UDATA0     _uartTxBuffer       
+    1c00 IDATA0     _uartTxHead         
+    1c01 IDATA0     _uartTxTail         
+    6ebe CODE       _vsprintf           
+    65d8 CODE       _writeBuffer        
+    6586 CODE       _writeRegister      
+    5f6a CONST      thread_init_begin   
+    5f6c CONST      thread_init_end     
+
+
+SYMBOLS BY VALUE
+
+     4c0            ___crt_mpy          
+     4c8            ___crt_op2          
+     4ca            ___crt_reslo        
+     4d0            ___crt_mpy32l       
+     4d2            ___crt_mpy32h       
+     4e0            ___crt_op2l         
+     4e2            ___crt_op2h         
+     4e8            ___crt_res2         
+     4ea            ___crt_res3         
+    1c00 IDATA0     _uartTxHead         
+    1c00            ___begin_IDATA0     
+    1c00            ___RAM_Address      
+    1c01 IDATA0     _uartTxTail         
+    1c02 IDATA0     _uartRxHead         
+    1c04 IDATA0     _uartRxMsgAvailable 
+    1c06 IDATA0     _uartTxActive       
+    1c08 IDATA0     _spiMsgLength       
+    1c09 IDATA0     _spiTxPtr           
+    1c0a IDATA0     _spiRxPtr           
+    1c0b IDATA0     _spiRxDone          
+    1c0c IDATA0     _radioInterruptFlag 
+    1c0e IDATA0     _tempFlag           
+    1c10 IDATA0     _myTimerCoarse      
+    1c14 IDATA0     _myTimerFine        
+    1c18            ___begin_UDATA0     
+    1c18            ___end_IDATA0       
+    1c18 UDATA0     _temp               
+    1c1c UDATA0     _temp85             
+    1c1e UDATA0     _temp30             
+    1c20 UDATA0     _inter0             
+    1c24 UDATA0     _slope              
+    1c28 UDATA0     _spiRxBuffer        
+    1d28 UDATA0     _spiTxBuffer        
+    1e28 UDATA0     _uartPrintfBuffer   
+    1f28 UDATA0     _uartRxBuffer       
+    2028 UDATA0     _uartTxBuffer       
+    2128 UDATA0     ___user_format_extender
+    212a            ___begin_THREAD     
+    212a            ___end_UDATA0       
+    212c            ___end_THREAD       
+    4000            ___RAM_Size         
+    5c00 ISR        _uartInterrupt      
+    5c62 ISR        _spiInterrupt       
+    5cbc ISR        _radioInterrupt     
+    5ccc ISR        _tempDone           
+    5d42 ISR        _timerInterrupt     
+    5f6a CONST      thread_init_begin   
+    5f6c CONST      ___RAL_hex_uc       
+    5f6c CONST      thread_init_end     
+    5f7c CONST      ___RAL_hex_lc       
+    6068 CONST      ___float32_nan      
+    606c CODE       _IncrementVcore     
+    610e CODE       _initClock          
+    6132 CODE       _sleep              
+    6148 CODE       _initUART           
+    6184 CODE       _uartTransmit       
+    61d0 CODE       _uartPrintf         
+    6204 CODE       _spiTransmit        
+    623a CODE       _spiReceive         
+    6266 CODE       _initSPI            
+    62b6 CODE       _getStatus          
+    6318 CODE       _setStandby         
+    633e CODE       _setRx              
+    6384 CODE       _setTx              
+    63ca CODE       _setPacketType      
+    63f0 CODE       _setRfFrequency     
+    6456 CODE       _setBufferBaseAddress
+    6484 CODE       _setModulationParams
+    64c8 CODE       _setDioIrqParams    
+    652a CODE       _setPacketParams    
+    6586 CODE       _writeRegister      
+    65d8 CODE       _writeBuffer        
+    661e CODE       _readBuffer         
+    667e CODE       _setLoraSyncWord    
+    66a4 CODE       _getRxBufferStatus  
+    66ee CODE       _setTxParams        
+    671a CODE       _setPaConfig        
+    6752 CODE       _setDIO2AsRfSwitchCtrl
+    6776 CODE       _getIrqStatus       
+    67b2 CODE       _clearIrqStatus     
+    67e0 CODE       _getPacketStatus    
+    6814 CODE       _initInterruptPin   
+    682a CODE       _initTemp           
+    688e CODE       _getTemp            
+    68a4 CODE       _initTimer          
+    68b2 CODE       _getTime            
+    68c6 CODE       _sleepUntil         
+    68dc CODE       _main               
+    6c04 CODE       ___int16_div        
+    6c2a CODE       ___int16_mod        
+    6c50 CODE       ___int16_mul        
+    6c66 CODE       ___int64_lsr        
+    6cc6 CODE       ___uint64_mod       
+    6ce6 CODE       ___uint16_div       
+    6cfe CODE       ___uint32_div       
+    6d08 CODE       ___uint32_divmod    
+    6d30 CODE       ___uint32_mod       
+    6d3e CODE       ___uint64_div       
+    6d66 CODE       ___uint64_divmod    
+    6da2 CODE       ___RAL_pow10f       
+    6df8 CODE       ___putc             
+    6e42 CODE       ___RAL_print_padding
+    6e60 CODE       ___RAL_pre_padding  
+    6e8a CODE       _abs                
+    6e9a CODE       ___errno            
+    6ea4 CODE       _strnlen            
+    6ebe CODE       _vsprintf           
+    6ee6 CODE       _memcpy             
+    6ef6 CODE       _memset             
+    6f06 CODE       _strlen             
+    6f16 CODE       ___vfprintf_float_long_long
+    6f16 CODE       ___vfprintf         
+    80aa CODE       ___float32_isinf    
+    80c4 CODE       ___float32_isnan    
+    80dc CODE       ___float32_signbit  
+    80ec CODE       ___float32_add      
+    81de CODE       ___float32_sub      
+    81ea CODE       ___float32_mul      
+    82c2 CODE       ___float32_div      
+    8380 CODE       ___float32_lt       
+    839c CODE       ___float32_eq       
+    83ac CODE       ___uint16_to_float32
+    83d6 CODE       ___uint32_to_float32
+    8420 CODE       ___float32_to_int16 
+    845c CODE       ___float32_to_int32 
+    84a6 CODE       _modff              
+    853c CODE       _floorf             
+    860c CODE       _fmodf              
+    8790 CODE       _fabsf              
+    8796 CODE       _ldexpf             
+    87d2 CODE       _frexpf             
+    87f6 CODE       ___RAL_read_tp      
