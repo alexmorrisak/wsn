@@ -71,7 +71,7 @@ int main(void) {
     // This works
     sleep(1);
     uartPrintf("Setting Tx params...\n");
-    setTxParams(0xf7, 0x07);
+    setTxParams(0x16, 0x07);
 
     sleep(1);
     uartPrintf("Setting PA Config...\n");
@@ -121,7 +121,7 @@ int main(void) {
         buffer[14] = 0x00;
         buffer[15] = 0x00;
         writeBuffer(buffer, 0, 16);
-        
+        toggleLED();
         clearIrqStatus(0xffff);
         setTx(0); // transmit the packet, no timeout
         while (!radioInterruptFlag) {
@@ -159,13 +159,13 @@ int main(void) {
                   uartPrintf("\n");
               }
               timestamp_coarse[islave] = 0;
-              timestamp_coarse[islave] += data[3] * 2^24;
-              timestamp_coarse[islave] += data[4] * 2^16;
-              timestamp_coarse[islave] += data[5] << 8;
-              timestamp_coarse[islave] += data[6] << 0;
+              timestamp_coarse[islave] += (unsigned long) (data[3]) << 24;
+              timestamp_coarse[islave] += (unsigned long) (data[4]) << 16;
+              timestamp_coarse[islave] += (unsigned long) (data[5]) << 8;
+              timestamp_coarse[islave] += (unsigned long) (data[6]) << 0;
               timestamp_fine[islave] = 0;
-              timestamp_fine[islave] += data[7] << 8;
-              timestamp_fine[islave] += data[8] << 0;
+              timestamp_fine[islave] += data[7] * 2^8;
+              timestamp_fine[islave] += data[8] * 2^0;
               temperature[islave] = 0;
               temperature[islave] += data[9] << 8;
               temperature[islave] += data[10] << 0;
