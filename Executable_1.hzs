@@ -34,14 +34,6 @@
  </Memory4>
  <Project>
   <ProjectSessionItem path="wsn"/>
-  <ProjectSessionItem path="wsn;test_timer"/>
-  <ProjectSessionItem path="wsn;test_timer;Source Files"/>
-  <ProjectSessionItem path="wsn;test_uart"/>
-  <ProjectSessionItem path="wsn;test_uart;Source Files"/>
-  <ProjectSessionItem path="wsn;transmit_receive"/>
-  <ProjectSessionItem path="wsn;transmit_receive;Source Files"/>
-  <ProjectSessionItem path="wsn;wsnFinalProject"/>
-  <ProjectSessionItem path="wsn;wsnFinalProject;Source Files"/>
   <SourceCodeControlLogin password="F9BB6682F5D56822" user=""/>
  </Project>
  <Register1>
@@ -80,7 +72,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="13" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="wsn final project/main.c" selected="1" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="189" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="wsn final project/main.c" selected="1" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="5" y="373" useTextEdit="1" openedFrom="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/wsn final project/main.c" useBinaryEdit="0" left="0" path="include/sx1262.h" selected="0" top="353" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="20" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/mytimer.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="20" y="36" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/test_uart/main.c" selected="0" top="6" codecName="Default"/>
