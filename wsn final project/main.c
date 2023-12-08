@@ -7,25 +7,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ADC.c"
-<<<<<<< HEAD
-#include <mytimer.h>
-
-int i, j, len;
-char npackets=0;
-int helpFlag = 1;
-char buffer[256];
-char data[256];
-//char uartBuffer[256];
-struct Status status;
-struct RxBufferStatus rxBufferStatus;
-char standbyMode = 0;
-char packetType = 0;
-int syncword = 0;
-int irqStatus;
-unsigned long freq;
-char rssi;
-char deviceID;
-=======
 #include "mytimer.h"
 
 #define NSLAVES 2
@@ -52,7 +33,6 @@ int main(void) {
     unsigned int timestamp_fine[NSLAVES];
     unsigned int temperature[NSLAVES];
     int deviceId[NSLAVES];
->>>>>>> 6ada1728cdf677d5d69e056bce0594dd7fcea010
   
 
     unsigned long coarse, tstart, waitTime;
@@ -114,73 +94,6 @@ int main(void) {
     setDioIrqParams(IRQ_TXDONE | IRQ_RXDONE | IRQ_TIMEOUT, 0xffff, 0, 0); // turn on interrupts, map all to DIO1
 
     setLoraSyncWord(0x1424);
-<<<<<<< HEAD
-
-    
-      switch(deviceID){//device ID determines master slave1 or slave2
-      case 1://master case
-        /*
-         wake up
-         go to transmit mode
-         send request for packet from other nodes
-         go to receive mode
-         slave 1 responds after xx time
-         we print its deviceID, time stamp, packet number, and temperature to UART 
-         slave 2 waits xx time and then sends its own
-         we print its deviceID, time stamp, packet number, and temperature to UART
-         everyone sleeps until 5 sec pass
-         repeat
-        */
-      
-      //start timer
-      while(1){
-        /*
-        data = getTime();
-        len = size(data);
-        writeBuffer(data, 0, len);
-        setTx();
-
-        LPM0;//SLEEP UNTIL WE ARE DONE TRANSMITTING
-        setRx();
-        LPM0;//sleep till we receive message 1
-        rxBufferStatus = getRxBufferStatus();
-        readBuffer(data, rxBufferStatus.RxStartBufferPointer, rxBufferStatus.PayloadLengthRx)
-        setRx();
-        LPM0;//sleep till we receive message 2
-
-        /*
-        
-      }   
-
-      break;
-      case 2://slave 1 case
-      /*
-        wake up
-        go into receive mode
-        receive packet request
-        wait xx time
-        load transmit buffer w deviceID, time stamp, packet number, and temperature
-        go into transmit mode
-        sleep until the start of the next frame
-      */
-
-      break;
-      case 3://slave 2 case
-      /*
-        wake up
-        go into receive mode
-        receive packet request
-        wait xx time
-        load transmit buffer w deviceID, time stamp, packet number, and temperature
-        go into transmit mode
-        sleep until the start of the next frame
-      */
-
-      break;
-
-      
-  
-=======
     getTime(&tstart, &fine);
      while (1) {
         getTime(&coarse, &fine);
@@ -278,6 +191,5 @@ int main(void) {
         tstart += 1*64;
         sleepUntil(tstart); // sleep until the next 1-second interval
      }
->>>>>>> 6ada1728cdf677d5d69e056bce0594dd7fcea010
 }
    

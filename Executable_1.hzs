@@ -80,11 +80,11 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="26" y="116" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="wsn final project/main.c" selected="0" top="99" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="196" useTextEdit="1" openedFrom="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/wsn final project/main.c" useBinaryEdit="0" left="0" path="include/sx1262.h" selected="0" top="175" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="17" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/mytimer.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="39" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/test_uart/main.c" selected="1" top="6" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="62" useTextEdit="1" openedFrom="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/include/test_uart/main.c" useBinaryEdit="0" left="0" path="include/myuart.h" selected="0" top="42" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="13" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="wsn final project/main.c" selected="1" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="373" useTextEdit="1" openedFrom="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/wsn final project/main.c" useBinaryEdit="0" left="0" path="include/sx1262.h" selected="0" top="353" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="20" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/mytimer.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="20" y="36" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="include/test_uart/main.c" selected="0" top="6" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="111" useTextEdit="1" openedFrom="D:/Users/afmorris/Documents/CrossWorks Projects/wsn/include/test_uart/main.c" useBinaryEdit="0" left="0" path="include/myuart.h" selected="0" top="80" codecName="Default"/>
  </Files>
- <MSP430CrossStudioWindow activeProject="test_uart" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET/MSP-FET430UIF/eZ-FET" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="528255"/>
+ <MSP430CrossStudioWindow activeProject="wsnFinalProject" fileDialogDefaultFilter="*.c" autoConnectTarget="MSP-FET/MSP-FET430UIF/eZ-FET" buildConfiguration="MSP430 Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="528255"/>
 </session>
