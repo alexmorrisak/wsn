@@ -192,7 +192,7 @@
       <file file_name="$(StudioDir)/src/crt0.asm" />
     </folder>
   </project>
-  <project Name="wsnFinalProject">
+  <project Name="wsn_master">
     <configuration
       Name="Common"
       Platform="MSP430"
